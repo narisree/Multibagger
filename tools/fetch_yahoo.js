@@ -5,6 +5,7 @@
  *
  *   node tools/fetch_yahoo.js --candidates   # refresh data/candidates.json
  *   node tools/fetch_yahoo.js --portfolio    # refresh data/portfolio.json (daily PHASE 2)
+ *   node tools/fetch_yahoo.js --paper        # mark the ₹50k paper book to market + benchmark
  *
  * Each record must carry a Yahoo symbol, e.g.  "yahooSymbol": "NESCO.NS"
  *   - NSE tickers use the .NS suffix, BSE uses .BO
@@ -173,9 +174,47 @@ async function updatePortfolio() {
   console.log('Reminder: re-embed into tracker.html with  node tools/embed_data.js');
 }
 
+async function updatePaper() {
+  const file = path.join(ROOT, 'data', 'paper-trades.json');
+  const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+  let n = 0;
+  for (const h of data.holdings || []) {
+    if (!h.yahooSymbol) { console.log(`- ${h.ticker}: no yahooSymbol, skipped`); continue; }
+    try {
+      const ch = await fetchChart(h.yahooSymbol);
+      h.currentPrice = ch.cmp;
+      if (Array.isArray(ch.priceSeries) && ch.priceSeries.length > 1) h.priceSeries = ch.priceSeries;
+      const val = ch.cmp * (h.shares || 0);
+      const pl = val - (h.invested || 0);
+      console.log(`✓ ${h.ticker}: CMP ₹${ch.cmp} · value ₹${val.toFixed(0)} · P&L ${pl >= 0 ? '+' : ''}${pl.toFixed(0)}`);
+      n++;
+    } catch (e) {
+      console.log(`- ${h.ticker}: price fetch failed (${e && e.message || e}); keeping prior currentPrice`);
+    }
+  }
+  // benchmark index (best-effort)
+  const bm = data.benchmark;
+  if (bm && bm.yahooSymbol) {
+    try {
+      const ch = await fetchChart(bm.yahooSymbol);
+      bm.currentLevel = ch.cmp;
+      if (bm.startProvisional) { bm.startLevel = ch.cmp; bm.startProvisional = false; bm.startDate = today; }
+      console.log(`✓ benchmark ${bm.name} (${bm.yahooSymbol}): level ${ch.cmp}`);
+    } catch (e) {
+      console.log(`- benchmark fetch failed (${e && e.message || e}); keeping prior level`);
+    }
+  }
+  data.meta = data.meta || {};
+  data.meta.lastUpdated = today;
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+  console.log(`\nUpdated ${n} holding(s) -> data/paper-trades.json`);
+  console.log('Reminder: re-embed into tracker.html with  node tools/embed_data.js');
+}
+
 (async () => {
   const mode = process.argv[2];
   if (mode === '--candidates') await updateCandidates();
   else if (mode === '--portfolio') await updatePortfolio();
-  else die('Usage: node tools/fetch_yahoo.js [--candidates|--portfolio]');
+  else if (mode === '--paper') await updatePaper();
+  else die('Usage: node tools/fetch_yahoo.js [--candidates|--portfolio|--paper]');
 })().catch(e => die('ERROR: ' + (e && e.message || e)));

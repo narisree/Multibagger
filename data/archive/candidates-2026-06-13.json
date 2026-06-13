@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "screenDate": "2026-06-13",
+    "isIllustrative": false,
+    "illustrativeNotice": "",
+    "dataNotes": "REAL research-stage data from a FOCUSED web screen of selected NSE small-caps (not an exhaustive 251+ universe scan). Figures are point-in-time snapshots from authorised aggregators (Screener/Trendlyne/MoneyWorks4Me/MarketsMojo) on the dates in each 'sources' entry, gathered early-to-mid June 2026; they LAG live quotes and MUST be re-verified on NSE/BSE before any decision. Fundamental fields are well-sourced; several technical fields (exact 50/200-DMA, RSI) are best-estimates pending the Yahoo/GitHub-Actions refresh. Surveillance flags set false were not individually confirmed for every name in search results — verify on the NSE ASM/GSM report. Not financial advice.",
+    "universeScanned": 9,
+    "universePassedFilters": 6,
+    "weights": { "fundamental": 0.6, "technical": 0.4 },
+    "tiers": { "high": 75, "medium": 60 },
+    "liquidityFloorCr": 1.0,
+    "cmpCeiling": 1000,
+    "amfiCutoffNote": "AMFI Jan 2026 reference: large = top 100 (floor ~Rs 1,05,000 cr), mid = ranks 101-250 (floor ~Rs 34,700 cr), small/micro = 251+ (below ~Rs 34,700 cr). All included names sit below the mid-cap floor. Re-verify against the live AMFI list."
+  },
+  "candidates": [
+    {
+      "ticker": "MARKSANS",
+      "yahooSymbol": "MARKSANS.NS",
+      "name": "Marksans Pharma Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Pharmaceuticals (Generics / CMO)",
+      "cmp": 253.86,
+      "marketCapCr": 10567,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 30,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 18, "patCagr3y": 26, "growthQuality": 80,
+        "opm": 20.5, "npm": 17.3, "marginTrend": "rising",
+        "roe": 16.9, "roce": 22.5,
+        "debtEquity": 0.01, "interestCoverage": 30, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.8,
+        "promoterHolding": 43.87, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 19, "pb": 3.5, "peg": 0.8,
+        "structuralEdgeScore": 75, "governanceScore": 72
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": true,
+        "nearBreakout": true, "keySupport": 235, "keyResistance": 271,
+        "rsi": 60, "macd": "bullish",
+        "weekHigh52": 270.70, "weekLow52": 155.00, "basePatternScore": 70
+      },
+      "priceSeries": [158,162,170,166,175,183,179,190,198,205,201,212,219,214,223,228,222,231,238,234,229,236,241,244,239,246,250,247,252,253.86],
+      "thesis": {
+        "core": "Vertically integrated generics maker (US/UK/Australia OTC + Rx) with in-house CRAMS/CMO capacity; consistent debt-free, high-ROCE compounding with USFDA approvals widening the product basket.",
+        "catalysts": "New USFDA ANDA approvals (e.g. Benzonatate, Apr 2026), UK/EU capacity ramp, possible buyback; PAT +64% YoY in Q4 FY26.",
+        "horizon": "12-30 months",
+        "whatMustGoRight": "Approval cadence sustains, margins hold as generics price-erode, and CMO utilisation rises without a leveraged acquisition.",
+        "risks": "US generic price erosion, regulatory/USFDA inspection risk, FX, customer concentration in OTC.",
+        "invalidation": "An adverse USFDA action (warning letter/import alert), OPM contraction >300bps for two quarters, debt-funded M&A pushing D/E above 0.5, or a decisive close below the 200-DMA."
+      },
+      "sources": [
+        { "label": "Screener.in / Tickertape — MARKSANS", "url": "https://www.screener.in/company/MARKSANS/consolidated/", "date": "2026-06-05", "note": "mcap, ROCE/ROE, D/E, promoter holding, Q4 results" },
+        { "label": "Trendlyne — MARKSANS ASM/GSM & pledge", "url": "https://trendlyne.com/equity/asm-status/841/MARKSANS/marksans-pharma-ltd/", "date": "2026-04-02", "note": "no ASM/GSM; promoters declared zero encumbrance" },
+        { "label": "MarketsMojo — MARKSANS technicals", "url": "https://www.marketsmojo.com/stocks-analysis/price-movement/marksans-pharma-604869-0", "date": "2026-06-10", "note": "CMP 253.86, 50-DMA 206.13, 200-DMA 235.37, golden cross" }
+      ]
+    },
+    {
+      "ticker": "HBLENGINE",
+      "yahooSymbol": "HBLENGINE.NS",
+      "name": "HBL Engineering Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Capital Goods / Defence & Railways",
+      "cmp": 784.05,
+      "marketCapCr": 21733,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 40,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 25, "patCagr3y": 45, "growthQuality": 70,
+        "opm": 17.0, "npm": 13.0, "marginTrend": "rising",
+        "roe": 21.0, "roce": 27.0,
+        "debtEquity": 0.05, "interestCoverage": 25, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.7,
+        "promoterHolding": 59.11, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 45, "pb": 8.0, "peg": 1.1,
+        "structuralEdgeScore": 82, "governanceScore": 68
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "inline", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 720, "keyResistance": 900,
+        "rsi": 44, "macd": "bearish",
+        "weekHigh52": 1130, "weekLow52": 480, "basePatternScore": 55
+      },
+      "priceSeries": [505,540,585,560,620,680,650,740,800,860,910,880,980,1040,1010,1090,1060,990,940,900,870,840,860,820,800,810,795,805,790,784.05],
+      "thesis": {
+        "core": "Indigenisation of defence (batteries, e-fuzes) and railway safety (Kavach/TCAS) — a small-cap with a rising order book where each large win moves earnings materially; near debt-free with 27% ROCE.",
+        "catalysts": "Kavach order finalisations across zones, defence battery/spin-off orders, export wins; Q2 FY26 PAT +170%.",
+        "horizon": "12-30 months",
+        "whatMustGoRight": "Kavach tenders convert to executed revenue on schedule and rich valuation (P/E ~45) is supported by sustained 30%+ earnings growth.",
+        "risks": "Lumpy government ordering, valuation de-rating risk (already corrected ~21% in 6m), working-capital build, execution.",
+        "invalidation": "Order book stalling for 2+ quarters, OCF turning negative, any promoter pledge appearing, or entry into ASM/GSM."
+      },
+      "sources": [
+        { "label": "Screener.in — HBLENGINE", "url": "https://www.screener.in/company/HBLENGINE/consolidated/", "date": "2026-05-12", "note": "CMP 784.05, mcap, ROCE 27%, D/E 4.6%" },
+        { "label": "Choice / Equitymaster — HBL shareholding", "url": "https://choiceindia.com/stocks/hbl-engineering-ltd-shareholding-pattern", "date": "2026-06-01", "note": "promoter 59.11%, zero pledge, FII 5.87%" },
+        { "label": "MarketsMojo — HBL Q2 FY26", "url": "https://www.marketsmojo.com/news/result-analysis/hbl-engineering-q2-fy26-stellar-quarter-drives-170-profit-surge-but-valuation-concerns-persist-3686143", "date": "2026-05-12", "note": "PAT +170%; valuation concern flagged" }
+      ]
+    },
+    {
+      "ticker": "CONTROLPR",
+      "yahooSymbol": "CONTROLPR.NS",
+      "name": "Control Print Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Industrial Coding & Marking",
+      "cmp": 636.80,
+      "marketCapCr": 1026,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 2.5,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 14, "patCagr3y": 16, "growthQuality": 65,
+        "opm": 22.0, "npm": 16.0, "marginTrend": "stable",
+        "roe": 27.6, "roce": 19.3,
+        "debtEquity": 0.0, "interestCoverage": 40, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.85,
+        "promoterHolding": 52.98, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 10.4, "pb": 2.5, "peg": 0.7,
+        "structuralEdgeScore": 68, "governanceScore": 70
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "inline", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 600, "keyResistance": 720,
+        "rsi": 48, "macd": "neutral",
+        "weekHigh52": 820, "weekLow52": 520, "basePatternScore": 55
+      },
+      "priceSeries": [560,575,590,605,598,620,635,648,640,655,668,660,650,672,665,658,645,652,640,648,635,642,630,638,645,633,640,632,638,636.80],
+      "thesis": {
+        "core": "Domestic No.2 in industrial coding & marking (CIJ/TIJ/laser printers) on a razor-and-blade model — printers seed a high-margin annuity of inks/consumables; debt-free, ROE ~28%, trading at a deep P/E discount (~10x) to peers.",
+        "catalysts": "Manufacturing/PLI-led demand for coding on packaging, consumables annuity compounding, market-share gains via import substitution; valuation re-rating optionality.",
+        "horizon": "24-48 months",
+        "whatMustGoRight": "Installed base keeps expanding so consumables revenue compounds, and the market eventually re-rates a high-quality, cheap compounder.",
+        "risks": "Lower liquidity (smaller float — confirm exitability), slower top-line growth than peers, competition from MNCs.",
+        "invalidation": "ROE falling below 18%, consumables mix shrinking, any debt build, or 30-session traded value sustaining below the Rs 1 cr liquidity floor."
+      },
+      "sources": [
+        { "label": "Screener.in / MoneyWorks4Me — CONTROLPR", "url": "https://www.screener.in/company/CONTROLPR/consolidated/", "date": "2026-04-30", "note": "CMP 636.80, mcap 1026 cr, ROCE 19.3%, ROE 27.6%, D/E 0, P/E 10.36, promoter 52.98%" }
+      ]
+    },
+    {
+      "ticker": "GOLDIAM",
+      "yahooSymbol": "GOLDIAM.NS",
+      "name": "Goldiam International Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Lab-Grown Diamonds / Jewellery",
+      "cmp": 391.30,
+      "marketCapCr": 4418,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 8,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 18, "patCagr3y": 20, "growthQuality": 70,
+        "opm": 22.0, "npm": 18.0, "marginTrend": "stable",
+        "roe": 13.5, "roce": 29.0,
+        "debtEquity": 0.0, "interestCoverage": 50, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.7,
+        "promoterHolding": 59.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 35, "pb": 5.0, "peg": 1.5,
+        "structuralEdgeScore": 78, "governanceScore": 72
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": false, "higherHighs": false,
+        "rsVsSmallcap": "underperform", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 360, "keyResistance": 440,
+        "rsi": 43, "macd": "bearish",
+        "weekHigh52": 520, "weekLow52": 300, "basePatternScore": 48
+      },
+      "priceSeries": [470,485,500,492,478,460,470,455,440,448,432,420,428,415,405,412,400,408,396,402,388,395,382,390,398,386,392,384,389,391.30],
+      "thesis": {
+        "core": "Debt-free, cash-rich exporter pivoting to the structural lab-grown-diamond (LGD) shift, now building a domestic LGD retail brand (ORIGEM) funded by a Rs 202 cr QIP — optionality on a new high-growth consumer category.",
+        "catalysts": "ORIGEM store rollout (toward ~200 stores), LGD penetration of bridal/fashion jewellery, US export recovery.",
+        "horizon": "24-48 months",
+        "whatMustGoRight": "ORIGEM scales profitably without eroding the cash balance, and LGD price deflation is offset by volume.",
+        "risks": "LGD price deflation, retail-expansion cash burn (rising working capital), US tariff/demand cyclicality, ROE diluted by the large cash pile and QIP.",
+        "invalidation": "ORIGEM losses persisting beyond ~2 years, OCF turning negative, ROCE falling below 15%, or LGD realisations collapsing."
+      },
+      "sources": [
+        { "label": "Screener.in / Tickertape — GOLDIAM", "url": "https://www.screener.in/company/GOLDIAM/consolidated/", "date": "2026-05-22", "note": "CMP 391.30, mcap 4418 cr, ROCE 29%, ROE 13.5%, debt-free, promoter 59%" },
+        { "label": "Retail Jeweller India — ORIGEM QIP", "url": "https://retailjewellerindia.com/goldiam-raises-rs-202-crore-to-expand-origem-its-lab-grown-diamond-jewellery-retail-brand/", "date": "2025-08-01", "note": "Rs 202 cr QIP for ORIGEM LGD retail expansion" },
+        { "label": "MarketsMojo — GOLDIAM Q3 FY26", "url": "https://www.marketsmojo.com/news/result-analysis/goldiam-international-q3-fy26-profit-growth-stalls-amid-revenue-decline-3826543", "date": "2026-02-01", "note": "technical weakness / valuation downgrade flagged" }
+      ]
+    },
+    {
+      "ticker": "MAHSEAMLES",
+      "yahooSymbol": "MAHSEAMLES.NS",
+      "name": "Maharashtra Seamless Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Steel Pipes & Tubes (Seamless)",
+      "cmp": 609.80,
+      "marketCapCr": 8238,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 20,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 15, "patCagr3y": 30, "growthQuality": 55,
+        "opm": 20.0, "npm": 15.0, "marginTrend": "stable",
+        "roe": 14.0, "roce": 16.6,
+        "debtEquity": 0.0, "interestCoverage": 40, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.9,
+        "promoterHolding": 62.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 12, "pb": 1.5, "peg": 0.8,
+        "structuralEdgeScore": 60, "governanceScore": 65
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "inline", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 560, "keyResistance": 680,
+        "rsi": 50, "macd": "neutral",
+        "weekHigh52": 880, "weekLow52": 520, "basePatternScore": 52
+      },
+      "priceSeries": [545,560,575,568,582,595,588,602,615,608,620,612,625,618,605,612,600,608,596,604,592,600,588,596,604,598,606,602,608,609.80],
+      "thesis": {
+        "core": "Debt-free, cash-rich seamless-pipe leader (DP Jindal group) leveraged to oil-&-gas and infrastructure capex; cheap (P/E ~12, P/B ~1.5) with capacity to ride a domestic capex up-cycle.",
+        "catalysts": "Oil-&-gas/water pipeline capex, import-substitution in seamless tubes, capacity additions; cyclical earnings upswing.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Demand cycle stays firm and realisations hold; the cash-heavy balance sheet gets deployed productively.",
+        "risks": "Cyclical end-markets (oil & gas), steel-price and spread volatility, modest ROE — more value/cyclical than a structural compounder.",
+        "invalidation": "Sustained capacity under-utilisation, ROCE falling below 12%, a down-cycle in seamless realisations, or large value-destructive capex."
+      },
+      "sources": [
+        { "label": "Screener.in / ValueResearch — MAHSEAMLES", "url": "https://www.screener.in/company/MAHSEAMLES/consolidated/", "date": "2026-06-02", "note": "CMP 609.80, mcap 8238 cr, ROCE 16.63%, debt-free" }
+      ]
+    },
+    {
+      "ticker": "IONEXCHANG",
+      "yahooSymbol": "IONEXCHANG.NS",
+      "name": "Ion Exchange (India) Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Water & Environment Engineering",
+      "cmp": 336.60,
+      "marketCapCr": 5115,
+      "capCategory": "Small Cap",
+      "amfiRank": null,
+      "avgDailyValueCr": 10,
+      "illustrative": false,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 15, "patCagr3y": 12, "growthQuality": 60,
+        "opm": 10.0, "npm": 7.0, "marginTrend": "stable",
+        "roe": 18.7, "roce": 18.5,
+        "debtEquity": 0.20, "interestCoverage": 8, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.6,
+        "promoterHolding": 25.5, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 23, "pb": 4.0, "peg": 1.9,
+        "structuralEdgeScore": 65, "governanceScore": 58
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": false, "higherHighs": false,
+        "rsVsSmallcap": "underperform", "rsVsSector": "underperform",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 313, "keyResistance": 400,
+        "rsi": 38, "macd": "bearish",
+        "weekHigh52": 580.75, "weekLow52": 312.70, "basePatternScore": 40
+      },
+      "priceSeries": [560,545,530,538,520,505,512,495,480,488,470,455,462,445,430,438,420,408,415,400,388,395,378,365,372,355,348,340,345,336.60],
+      "thesis": {
+        "core": "Integrated water-treatment play (engineering + chemicals + consumer) levered to India's water/wastewater capex (Jal Jeevan, industrial reuse) — a structural theme, currently beaten down and on the watchlist for a technical turn.",
+        "catalysts": "Large EPC water order wins, recycling/reuse mandates, BOOT project monetisation; mean-reversion after a ~38% one-year drawdown.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Order execution lifts the thin (~10%) margins, working capital normalises, and the downtrend bottoms.",
+        "risks": "Low promoter holding (~25.5%), lumpy EPC margins, rising working capital, and a firmly negative price trend (below 50- & 200-DMA, near 52-wk low).",
+        "invalidation": "WATCH only until it reclaims the 200-DMA on volume. Abandon if OCF turns negative, an order-book stall appears, or promoter holding falls further."
+      },
+      "sources": [
+        { "label": "Screener.in / Share.market — IONEXCHANG", "url": "https://www.screener.in/company/IONEXCHANG/consolidated/", "date": "2026-06-10", "note": "CMP 336.60, mcap 5115 cr, ROCE 18.5%, ROE 18.67%, D/E 0.196, promoter 25.5%, 52wk 312.7-580.75" }
+      ]
+    }
+  ],
+  "excluded": [
+    { "name": "Genus Power Infrastructures (GENUSPOWER)", "ticker": "GENUSPOWER", "reason": "Promoter pledge ~69.4% of promoter holding (>25% red-flag line), plus flagged cash-flow/rising-debt concerns — despite a strong Rs 25,173 cr smart-meter order book and 23% ROCE. Source: Trendlyne shareholding, Apr 2026.", "filter": "Red flag: promoter pledge > 25%" },
+    { "name": "Nesco Ltd (NESCO)", "ticker": "NESCO", "reason": "CMP ~Rs 1,133 (4 Jun 2026) — above the Rs 1,000 ceiling — though debt-free with ~22% ROCE and a Rs 3,500 cr capex plan. Re-qualifies if the ceiling is raised or price falls below Rs 1,000.", "filter": "Hard filter: CMP < Rs 1,000" },
+    { "name": "Pondy Oxides & Chemicals (POCL)", "ticker": "POCL", "reason": "CMP ~Rs 1,394 (26 May 2026) — above the Rs 1,000 ceiling — despite excellent momentum (FY26 revenue +45%, PAT +113%) and a new copper-recycling plant. Watch for a sub-Rs 1,000 level or a stock split.", "filter": "Hard filter: CMP < Rs 1,000" }
+  ]
+}

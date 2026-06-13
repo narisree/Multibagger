@@ -159,3 +159,44 @@ See `data/candidates.json` for the full shape. Key objects: `hardFilters`, `redF
 plus `priceSeries` for the sparkline. The top-level `excluded` array records guardrail rejections.
 The scoring engine reads the raw metrics and computes `fundamentalScore`, `technicalScore`,
 `composite`, and `tier` — you do not type the scores by hand.
+
+---
+
+## 7. Paper-trading test (₹50,000, conviction-weighted)
+
+`data/paper-trades.json` drives a small **paper-trading experiment** shown at the top of
+`tracker.html`. It exists to answer, honestly, *"how would these picks have done?"* — not to
+predict a number.
+
+**What it is — and what it is not.** The book **books the trades now** (at the screen-date CMP) and
+**marks them to market** as the months pass. It reports **realized P&L vs a Nifty Smallcap
+benchmark** and a live countdown to a **6-month review date (2026-12-13)**. It does **not** forecast a
+future value; the headline figure only becomes meaningful as real, dated prices arrive via the
+GitHub Actions pipeline.
+
+**Conviction weighting (computed, not hand-set).** Capital is allocated in proportion to each pick's
+composite score from the same `assets/scoring.js` engine used by the screener:
+
+```
+weight_i  = composite_i / Σ composite
+shares_i  = floor(startingCapital · weight_i / buyPrice_i)   # whole shares only
+cash      = startingCapital − Σ invested_i                    # residual, uninvested
+```
+
+Higher-composite (higher-conviction) names get a larger slice; the leftover that doesn't buy a whole
+share stays as cash. Because the composites cluster, the weights come out *roughly* even — which is
+the point: a transparent, reproducible rule, not a discretionary bet size.
+
+**Marking to market.** `tools/fetch_yahoo.js --paper` (then `tools/fetch_nse.py --paper` as the
+authoritative overwrite) refreshes each holding's `currentPrice` and the benchmark index level on the
+same schedule as the rest of the data. Per-holding value, P&L (₹ and %), the portfolio total, and the
+benchmark return are all computed in the dashboard from those marks. The benchmark's `startLevel` is
+re-baselined to the first live fetch (while `startProvisional` is true) so the comparison starts from
+a real, dated level.
+
+**At the 6-month review (2026-12-13):** record realized P&L vs the benchmark per name and in
+aggregate, attribute winners/losers to factors, and fold the lessons into the methodology-review log —
+the same *propose-don't-silently-apply* discipline as the rest of the method.
+
+> The paper book is a measurement tool, not advice. Whole-share, no-cost, no-slippage assumptions
+> mean it is an approximation of a real account.

@@ -390,13 +390,82 @@ def run_portfolio(nse):
     print(f"\nUpdated {n} position(s) from NSE -> data/portfolio.json")
 
 
+def benchmark_level(nse, name):
+    """Best-effort current level of a named NSE index (e.g. 'NIFTY SMALLCAP 250')."""
+    try:
+        data = nse.listIndices()
+    except Exception as e:  # noqa: BLE001
+        print(f"  · index list unavailable ({e})")
+        return None
+    rows = data.get("data") if isinstance(data, dict) else data
+    if not isinstance(rows, list):
+        return None
+    target = (name or "").upper().replace(" ", "")
+    best = None
+    for r in rows:
+        idx = str(dig(r, "index") or dig(r, "indexSymbol") or "").upper().replace(" ", "")
+        if not idx:
+            continue
+        if idx == target or (target and target in idx):
+            lvl = first_num(r, ("last",), ("lastPrice",), ("indexValue",))
+            if lvl is not None:
+                # exact match wins immediately; otherwise keep the first contains-match
+                if idx == target:
+                    return lvl
+                if best is None:
+                    best = lvl
+    return best
+
+
+def run_paper(nse):
+    f = ROOT / "data" / "paper-trades.json"
+    data = json.loads(f.read_text())
+    n = 0
+    for h in data.get("holdings", []):
+        sym = h.get("ticker")
+        if not sym:
+            continue
+        print(f"\n{sym}")
+        rec = {"ticker": sym}
+        if not enrich_quote(nse, sym, rec):
+            continue
+        if rec.get("cmp") is not None:
+            h["currentPrice"] = rec["cmp"]
+            val = rec["cmp"] * (h.get("shares") or 0)
+            pl = val - (h.get("invested") or 0)
+            print(f"  · paper: value ₹{val:.0f} P&L {'+' if pl >= 0 else ''}{pl:.0f}")
+            n += 1
+        rec.pop("_dayChangePct", None)
+        time.sleep(RATE_SLEEP)
+    bm = data.get("benchmark") or {}
+    if bm.get("name"):
+        lvl = benchmark_level(nse, bm["name"])
+        if lvl is not None:
+            bm["currentLevel"] = rnd(lvl)
+            if bm.get("startProvisional"):
+                bm["startLevel"] = rnd(lvl)
+                bm["startProvisional"] = False
+                bm["startDate"] = TODAY
+            print(f"\nbenchmark {bm['name']}: level {bm['currentLevel']}")
+        else:
+            print(f"\nbenchmark {bm['name']}: level unavailable (keeping prior)")
+    data.setdefault("meta", {})["lastUpdated"] = TODAY
+    f.write_text(json.dumps(data, indent=2) + "\n")
+    print(f"\nUpdated {n} holding(s) from NSE -> data/paper-trades.json")
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else ""
-    if mode not in ("--candidates", "--portfolio"):
-        sys.exit("Usage: python tools/fetch_nse.py [--candidates|--portfolio]")
+    if mode not in ("--candidates", "--portfolio", "--paper"):
+        sys.exit("Usage: python tools/fetch_nse.py [--candidates|--portfolio|--paper]")
     nse = get_nse()
     try:
-        run_candidates(nse) if mode == "--candidates" else run_portfolio(nse)
+        if mode == "--candidates":
+            run_candidates(nse)
+        elif mode == "--portfolio":
+            run_portfolio(nse)
+        else:
+            run_paper(nse)
     finally:
         try:
             nse.exit()
