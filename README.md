@@ -35,16 +35,21 @@ Open the two dashboards directly in a browser — no build step, no server, no d
 
 | File | Purpose |
 |---|---|
-| [`index.html`](index.html) | **PHASE 1** — selection, scoring & thesis dashboard |
+| [`index.html`](index.html) | Landing page linking both dashboards (the GitHub Pages entry point) |
+| [`screener.html`](screener.html) | **PHASE 1** — selection, scoring & thesis dashboard |
 | [`tracker.html`](tracker.html) | **PHASE 2** — daily monitoring dashboard |
 
-Each HTML file is self-contained and works offline (`file://`). When served over `http(s)` it reads
+Each dashboard is self-contained and works offline (`file://`). When served over `http(s)` it reads
 the editable JSON in `data/`; offline it falls back to an embedded copy of that data baked into the
 file. To serve locally so edits to `data/*.json` are picked up live:
 
 ```bash
-python3 -m http.server 8000   # then open http://localhost:8000/index.html
+python3 -m http.server 8000   # then open http://localhost:8000/
 ```
+
+**GitHub Pages:** enable via *Settings → Pages → Deploy from branch →
+`claude/india-smallcap-screener-b6byat` / `(root)`*. The site then lives at
+`https://narisree.github.io/Multibagger/` (landing), with the screener and tracker one click away.
 
 ---
 
@@ -52,7 +57,8 @@ python3 -m http.server 8000   # then open http://localhost:8000/index.html
 
 ```
 .
-├── index.html              # PHASE 1 selection dashboard (self-contained)
+├── index.html              # Landing page (links both dashboards; Pages entry point)
+├── screener.html           # PHASE 1 selection dashboard (self-contained)
 ├── tracker.html            # PHASE 2 monitoring dashboard (self-contained)
 ├── assets/
 │   └── scoring.js          # transparent scoring engine (canonical; also embedded in the HTML)
@@ -120,7 +126,7 @@ promoter holding & **pledge**, ROCE, ASM/GSM/T2T surveillance flags, order book,
 2. For each candidate, fill a record in `data/candidates.json` from the
    [authorised sources](docs/METHODOLOGY.md#0-data-sourcing-reality-read-first) — every numeric value
    carries a `sources` entry with a date.
-3. Open `index.html`. Candidates failing a hard filter or hitting a red flag go in the `excluded`
+3. Open `screener.html`. Candidates failing a hard filter or hitting a red flag go in the `excluded`
    list (and show in the "Excluded & why" panel).
 4. Review the ranked, tiered table and the per-stock thesis + invalidation triggers.
 

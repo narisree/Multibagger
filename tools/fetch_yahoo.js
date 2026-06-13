@@ -150,7 +150,7 @@ async function updateCandidates() {
   data.meta.screenDate = today;
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
   console.log(`\nUpdated ${n} candidate(s) -> data/candidates.json`);
-  console.log('Reminder: re-embed into index.html with  node tools/embed_data.js');
+  console.log('Reminder: re-embed into screener.html with  node tools/embed_data.js');
 }
 
 async function updatePortfolio() {

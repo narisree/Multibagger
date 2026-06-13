@@ -6,7 +6,7 @@
  *
  *   node tools/embed_data.js
  *
- * Pairs: index.html <- data/candidates.json ; tracker.html <- data/portfolio.json
+ * Pairs: screener.html <- data/candidates.json ; tracker.html <- data/portfolio.json
  */
 'use strict';
 const fs = require('fs');
@@ -14,7 +14,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 
 const pairs = [
-  { html: 'index.html', json: 'data/candidates.json' },
+  { html: 'screener.html', json: 'data/candidates.json' },
   { html: 'tracker.html', json: 'data/portfolio.json' }
 ];
 

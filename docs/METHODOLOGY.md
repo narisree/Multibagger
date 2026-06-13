@@ -6,7 +6,7 @@
 
 This document is the single source of truth for *how* the screen works: the filters, the scoring
 rubric, the data fields, and the daily/periodic tracking process. The dashboards
-(`index.html`, `tracker.html`) implement exactly what is described here, and the scoring engine in
+(`screener.html`, `tracker.html`) implement exactly what is described here, and the scoring engine in
 `assets/scoring.js` computes the pillar scores from the raw inputs (so scores are reproducible and
 auditable, not hand-typed).
 
@@ -100,7 +100,7 @@ Composite = Fundamental × wF + Technical × wT     (default wF = 0.60, wT = 0.4
 - **Medium**: 60–74 (actionable, smaller size)
 - **Watch**: < 60 (list but flag as *not actionable*)
 
-Weights are adjustable live via the slider in `index.html`; the defaults and tier cutoffs live in
+Weights are adjustable live via the slider in `screener.html`; the defaults and tier cutoffs live in
 `data/candidates.json → meta`.
 
 ### Adjustable knobs (and the trade-off when you move them)
