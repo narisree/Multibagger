@@ -3,10 +3,35 @@
     "lastUpdated": "2026-06-13",
     "isIllustrative": false,
     "illustrativeNotice": "",
-    "note": "No positions yet. Accept names from the PHASE 1 screener (screener.html) and add them here with entry date/price to begin daily tracking. Add a yahooSymbol per position so the GitHub Actions pipeline keeps prices live.",
+    "note": "Live prices refresh via the GitHub Actions pipeline (Yahoo + official NSE). In-container this shows entry-day values until the first Actions run.",
     "weights": { "fundamental": 0.6, "technical": 0.4 },
     "tiers": { "high": 75, "medium": 60 }
   },
-  "positions": [],
+  "positions": [
+    {
+      "ticker": "MARKSANS",
+      "yahooSymbol": "MARKSANS.NS",
+      "name": "Marksans Pharma Ltd",
+      "illustrative": false,
+      "entryDate": "2026-06-13",
+      "entryPrice": 253.86,
+      "entryFundamentalScore": 73,
+      "entryTechnicalScore": 89,
+      "entryCompositeScore": 79,
+      "entryTier": "High",
+      "thesisSummary": "Debt-free, vertically integrated generics maker (US/UK/Australia OTC + Rx) with in-house CMO capacity; ROCE ~22.5%, PAT +64% YoY in Q4 FY26, and a confirmed uptrend (golden cross). USFDA approvals keep widening the product basket.",
+      "invalidation": "Adverse USFDA action (warning letter/import alert); OPM contraction >300bps for two consecutive quarters; debt-funded M&A pushing D/E above 0.5; or a decisive close below the 200-DMA.",
+      "cmp": 253.86,
+      "dayChangePct": 0,
+      "currentFundamentalScore": 73,
+      "currentTechnicalScore": 89,
+      "currentCompositeScore": 79,
+      "thesisStatus": "Intact",
+      "recommendation": "HOLD",
+      "alerts": [],
+      "priceSeries": [158,162,170,166,175,183,179,190,198,205,201,212,219,214,223,228,222,231,238,234,229,236,241,244,239,246,250,247,252,253.86],
+      "lastNote": "Entry day. Above 50-DMA (206) and 200-DMA (235); golden cross confirmed. No new flags. Awaiting first live Actions refresh."
+    }
+  ],
   "alerts": []
 }
