@@ -4,8 +4,14 @@
     "isIllustrative": false,
     "illustrativeNotice": "",
     "note": "Live prices refresh via the GitHub Actions pipeline (Yahoo + official NSE). In-container this shows entry-day values until the first Actions run.",
-    "weights": { "fundamental": 0.6, "technical": 0.4 },
-    "tiers": { "high": 75, "medium": 60 }
+    "weights": {
+      "fundamental": 0.6,
+      "technical": 0.4
+    },
+    "tiers": {
+      "high": 75,
+      "medium": 60
+    }
   },
   "positions": [
     {
@@ -29,8 +35,39 @@
       "thesisStatus": "Intact",
       "recommendation": "HOLD",
       "alerts": [],
-      "priceSeries": [162,170,166,175,183,179,190,198,205,201,212,219,214,223,228,222,231,238,234,229,236,241,244,239,246,250,247,252,253.86,257.25],
-      "lastNote": "As of 11 Jun 2026: Rs 257.25 (+2.9% on the session) on a block deal. USFDA final approval for Benzonatate ANDA confirmed — positive and in-thesis. Above 50-DMA (206) & 200-DMA (235); golden cross intact. Watch: identity of the block-deal counterparties. (Web aggregators, 11 Jun 2026.)"
+      "priceSeries": [
+        162,
+        170,
+        166,
+        175,
+        183,
+        179,
+        190,
+        198,
+        205,
+        201,
+        212,
+        219,
+        214,
+        223,
+        228,
+        222,
+        231,
+        238,
+        234,
+        229,
+        236,
+        241,
+        244,
+        239,
+        246,
+        250,
+        247,
+        252,
+        253.86,
+        257.25
+      ],
+      "lastNote": "As of 11 Jun 2026: Rs 257.25 (+2.9% on the session) on a block deal. USFDA final approval for Benzonatate ANDA confirmed \u2014 positive and in-thesis. Above 50-DMA (206) & 200-DMA (235); golden cross intact. Watch: identity of the block-deal counterparties. (Web aggregators, 11 Jun 2026.)"
     }
   ],
   "alerts": []
