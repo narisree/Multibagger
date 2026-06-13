@@ -41,6 +41,19 @@ jobs:
       - name: Fetch portfolio (Phase 2) data
         run: node tools/fetch_yahoo.js --portfolio || echo "portfolio fetch skipped/failed (see log)"
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install NSE library (BennyThadikaran/NseIndiaApi)
+        run: pip install "git+https://github.com/BennyThadikaran/NseIndiaApi.git" "httpx[http2]"
+
+      - name: Fetch official NSE data (CMP / P/E / 52w / surveillance)
+        run: |
+          python tools/fetch_nse.py --candidates || echo "NSE candidates fetch skipped/failed (see log)"
+          python tools/fetch_nse.py --portfolio || echo "NSE portfolio fetch skipped/failed (see log)"
+
       - name: Re-embed data into dashboards
         run: node tools/embed_data.js
 

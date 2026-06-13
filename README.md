@@ -117,13 +117,32 @@ promoter holding & **pledge**, ROCE, ASM/GSM/T2T surveillance flags, order book,
 > network policy) blocks every market-data host. The fetcher still runs anywhere with normal
 > internet — your laptop, or **GitHub Actions** (below), which is the recommended automated path.
 
+### Official NSE data (tools/fetch_nse.py)
+
+`tools/fetch_nse.py` pulls **official** figures from NSE India via
+[BennyThadikaran/NseIndiaApi](https://github.com/BennyThadikaran/NseIndiaApi) (no API key): last
+price, P/E, 52-week high/low, and a best-effort **surveillance flag** (ASM/GSM) that feeds the
+red-flag check. It keys off each record's NSE `ticker` (e.g. `MARKSANS`). It needs `nseindia.com`
+reachable, so it runs in **GitHub Actions** (below), not inside a GitHub-only dev container.
+
+```bash
+pip install "git+https://github.com/BennyThadikaran/NseIndiaApi.git" "httpx[http2]"
+python tools/fetch_nse.py --candidates
+python tools/fetch_nse.py --portfolio
+```
+
+The two fetchers are complementary: **Yahoo** gives price history → 50/200-DMA, RSI and ratios;
+**NSE** then overwrites CMP / P/E / 52-week / surveillance with the authoritative values.
+
 ### Automated daily refresh (GitHub Actions)
 
-`.github/workflows/update-data.yml` runs the fetcher on GitHub-hosted runners — which have full
-internet access, so Yahoo is reachable there even when your local environment is locked down. It:
+`.github/workflows/update-data.yml` runs both fetchers on GitHub-hosted runners — which have full
+internet access, so Yahoo and NSE are reachable there even when your local environment is locked
+down. It:
 
 1. runs on a weekday schedule (after NSE close) and on manual dispatch (Actions tab → *Run workflow*),
-2. refreshes `data/candidates.json` and `data/portfolio.json`, re-embeds them into the dashboards,
+2. refreshes `data/candidates.json` and `data/portfolio.json` (Yahoo technicals, then official NSE
+   prices), re-embeds them into the dashboards,
 3. commits the changes back to the branch.
 
 With GitHub Pages enabled, your dashboards then update themselves daily with no machine of your own
