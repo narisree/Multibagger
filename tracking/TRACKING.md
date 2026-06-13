@@ -2,43 +2,42 @@
 
 > **Not financial advice.** High-risk segment. Flag bad news loudly; surface invalidation triggers.
 > This file is the human-readable source of truth; `../data/portfolio.json` drives `../tracker.html`.
-> Keep them in sync.
 
-**Last updated:** 2026-06-13 (illustrative)
+**Last updated:** 2026-06-13
 
 ---
 
 ## Positions
 
-### DEMO-1 — Illustrative Forgings Ltd  *(illustrative placeholder — replace)*
-| Field | Value |
-|---|---|
-| Entry date | 2026-06-13 |
-| Entry price | ₹412.50 |
-| Scores at entry (F / T / Composite) | 78 / 72 / 76 |
-| Conviction tier at entry | High |
-| Thesis (summary) | Import-substitution + EV content growth in precision forgings; capacity doubling against a >2x revenue order book. |
-| Invalidation triggers | Two quarters of OPM contraction >300bps · order book < 1x revenue · promoter pledge appears · close below 200-DMA on rising volume. |
+_None accepted yet._ The PHASE 1 screen (2026-06-13) produced the shortlist below. When you accept a
+name, add a position block here (entry date, entry price, the three scores, tier, thesis summary,
+invalidation triggers) and a mirror entry in `../data/portfolio.json`.
 
-**Daily log**
-| Date | CMP | Today % | Since entry | Notes (dated source) | Technicals | Thesis | Reco |
-|---|---|---|---|---|---|---|---|
-| 2026-06-13 | ₹418.00 | +1.3% | +1.3% | Demo entry — no real news. | Above 50/200-DMA; RSI 61 | Intact | HOLD |
+### PHASE 1 shortlist awaiting your decision (screen date 2026-06-13)
+| Ticker | Name | CMP | Composite | Tier |
+|---|---|---|---|---|
+| MARKSANS | Marksans Pharma | ₹253.86 | 79 | High |
+| HBLENGINE | HBL Engineering | ₹784.05 | 67 | Medium |
+| MAHSEAMLES | Maharashtra Seamless | ₹609.80 | 67 | Medium |
+| CONTROLPR | Control Print | ₹636.80 | 64 | Medium |
+| GOLDIAM | Goldiam International | ₹391.30 | 56 | Watch |
+| IONEXCHANG | Ion Exchange (India) | ₹336.60 | 43 | Watch |
+
+Excluded by guardrails: **GENUSPOWER** (promoter pledge ~69%), **NESCO** & **POCL** (CMP > ₹1,000).
 
 ---
 
 ## How to use this file
 
-1. **On accepting a stock from PHASE 1**, add a position block: entry date, entry price, the three
-   scores, tier, thesis summary, and the explicit invalidation triggers.
+1. **On accepting a stock**, add a position block: entry date, entry price, scores at entry, tier,
+   thesis summary, and explicit invalidation triggers.
 2. **Each tracking run**, append a dated row to that stock's daily log and update the mirror entry in
    `../data/portfolio.json` (CMP, `dayChangePct`, `thesisStatus`, `recommendation`, `alerts`,
-   `priceSeries`).
-3. **When an invalidation trigger fires**, add it to that position's `alerts` array in the JSON so it
-   shows in the dashboard's alerts panel, and set `thesisStatus: "Broken"` with
-   `recommendation: "EXIT-thesis-broken"`.
-4. **Periodic review** (monthly): record hit-rate, factor attribution, and any *proposed* (not yet
-   applied) methodology changes in the section below.
+   `priceSeries`). The GitHub Actions pipeline auto-refreshes prices if a `yahooSymbol` is set.
+3. **When an invalidation trigger fires**, add it to that position's `alerts` array and set
+   `thesisStatus: "Broken"` with `recommendation: "EXIT-thesis-broken"`.
+4. **Monthly review**: record hit-rate, factor attribution, and proposed (not yet applied)
+   methodology changes below.
 
 ---
 
