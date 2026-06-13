@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Multibagger Tracker — Daily Monitoring Dashboard</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#272c38;
+    --txt:#e7e9ee; --muted:#9aa3b2; --faint:#6b7383;
+    --up:#2fae66; --up-bg:#13301f; --down:#d9534f; --down-bg:#331616;
+    --hold:#5b8cff; --hold-bg:#16203a; --add:#2fae66; --reduce:#d9a23b; --reduce-bg:#332811; --exit:#d9534f;
+    --accent:#5b8cff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 80px}
+  header.app{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 24px;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px}
+  header.app h1{font-size:19px;margin:0;font-weight:650}
+  header.app .sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .pf{color:var(--muted);font-size:12.5px;text-align:right}
+  .pf b{color:var(--txt);font-size:15px}
+  .banner{margin:14px 0;padding:10px 14px;border:1px solid var(--down);background:var(--down-bg);border-radius:8px;color:#f3c9c7;font-size:12.5px}
+  .banner.demo{border-color:var(--reduce);background:var(--reduce-bg);color:#f0d9a8}
+  .banner b{color:#fff}
+  .alerts{margin:16px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .alerts .hd{background:var(--panel2);padding:9px 14px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);display:flex;justify-content:space-between}
+  .alerts .body{background:var(--panel)}
+  .alert{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-top:1px solid var(--line)}
+  .alert:first-child{border-top:none}
+  .alert.fired{background:var(--down-bg)}
+  .alert .ic{font-size:14px} .alert.fired .ic{color:var(--down)} .alert.warn .ic{color:var(--reduce)}
+  .alert .tk{font-weight:640;min-width:74px}
+  .alert .msg{color:#e7d6d4}
+  .alert.none{color:var(--up);padding:12px 14px}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  thead th{background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th.num{text-align:right}
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tk{font-weight:640}.tk .nm{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+  .pos{color:var(--up)} .neg{color:var(--down)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600}
+  .st-Intact{color:#bff3d4;background:var(--up-bg);border:1px solid #225f3c}
+  .st-Strengthening{color:#bff3d4;background:var(--up-bg);border:1px solid #2fae66}
+  .st-Weakening{color:#f0d9a8;background:var(--reduce-bg);border:1px solid #6a521c}
+  .st-Broken{color:#f3c9c7;background:var(--down-bg);border:1px solid #5a2422}
+  .rec{font-weight:680;font-size:12px}
+  .rec-HOLD{color:var(--hold)} .rec-ADD{color:var(--add)} .rec-REDUCE{color:var(--reduce)} .rec-EXIT{color:var(--exit)}
+  .spark{vertical-align:middle}
+  footer.app{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);color:var(--faint);font-size:11.5px}
+  .empty{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div>
+      <h1>Multibagger Tracker</h1>
+      <div class="sub">Daily monitoring dashboard (PHASE 2) · Last updated: <span id="updated">—</span></div>
+    </div>
+    <div class="pf" id="pfhead">—</div>
+  </header>
+
+  <div id="demoBanner" class="banner demo" style="display:none"></div>
+  <div class="banner"><b>Not financial advice.</b> Surfacing news and invalidation triggers is a research aid; positions and exits are the user's own decision. Re-verify every figure against the cited source.</div>
+
+  <div class="alerts">
+    <div class="hd"><span>⚠ Alerts — fired invalidation triggers &amp; red flags</span><span id="alertCount"></span></div>
+    <div class="body" id="alertBody"></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Ticker / Name</th>
+        <th class="num">Entry ₹</th>
+        <th class="num">CMP ₹</th>
+        <th class="num">% since entry</th>
+        <th class="num">Today %</th>
+        <th class="num">Composite</th>
+        <th>Trend</th>
+        <th>Thesis status</th>
+        <th>Recommendation</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <footer class="app">
+    Recommendations: <b style="color:var(--hold)">HOLD</b> · <b style="color:var(--add)">ADD-on-strength</b> ·
+    <b style="color:var(--reduce)">REDUCE</b> · <b style="color:var(--exit)">EXIT-thesis-broken</b>.
+    Tracking source of truth: <a href="tracking/TRACKING.md">tracking/TRACKING.md</a> and <a href="data/portfolio.json">data/portfolio.json</a>.
+    See <a href="docs/METHODOLOGY.md">methodology</a> for the daily-update and periodic-review process.
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  function fmt(n,d){ if(n==null||isNaN(n)) return '—'; return Number(n).toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+  function pct(n){ if(n==null||isNaN(n)) return '—'; return (n>=0?'+':'')+fmt(n,1)+'%'; }
+  function cls(n){ return n>0?'pos':(n<0?'neg':''); }
+
+  function sparkline(series){
+    if(!series||series.length<2) return '';
+    var w=120,h=28,pad=2, min=Math.min.apply(null,series),max=Math.max.apply(null,series),rng=(max-min)||1;
+    var pts=series.map(function(v,i){ var x=pad+i*(w-2*pad)/(series.length-1); var y=h-pad-((v-min)/rng)*(h-2*pad); return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+    var up=series[series.length-1]>=series[0], col=up?'var(--up)':'var(--down)';
+    return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><polyline fill="none" stroke="'+col+'" stroke-width="1.5" points="'+pts+'"/></svg>';
+  }
+
+  function load(){
+    var embedded=function(){ try{ return JSON.parse(document.getElementById('embedded-data').textContent); }catch(e){ return null; } };
+    if(location.protocol==='file:'){ boot(embedded()); return; }
+    fetch('data/portfolio.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(boot).catch(function(){ boot(embedded()); });
+  }
+
+  function boot(data){
+    if(!data){ document.getElementById('rows').innerHTML='<tr><td colspan="9" class="empty">No portfolio found. Populate data/portfolio.json.</td></tr>'; return; }
+    var m=data.meta||{}, pos=data.positions||[];
+    document.getElementById('updated').textContent=m.lastUpdated||'—';
+    if(m.isIllustrative){ var b=document.getElementById('demoBanner'); b.style.display='block';
+      b.innerHTML='<b>Illustrative demo data.</b> '+(m.illustrativeNotice||'Replace with the stocks you actually accepted from PHASE 1.'); }
+
+    // portfolio header
+    var agg=pos.length?pos.reduce(function(s,p){ return s+((p.cmp-p.entryPrice)/p.entryPrice*100); },0)/pos.length:0;
+    document.getElementById('pfhead').innerHTML='<b>'+pos.length+'</b> tracked · aggregate <b class="'+cls(agg)+'">'+pct(agg)+'</b> since entry (equal-weight)';
+
+    // alerts
+    var fired=[];
+    pos.forEach(function(p){ (p.alerts||[]).forEach(function(a){ fired.push({tk:p.ticker,msg:a}); }); });
+    (data.alerts||[]).forEach(function(a){ fired.push({tk:a.ticker||'—',msg:a.message||a}); });
+    var body=document.getElementById('alertBody'), cnt=document.getElementById('alertCount');
+    if(!fired.length){ body.innerHTML='<div class="alert none">✓ No invalidation triggers fired and no new red flags across the tracked book.</div>'; cnt.textContent='0 active'; }
+    else { cnt.textContent=fired.length+' active'; body.innerHTML=fired.map(function(f){ return '<div class="alert fired"><span class="ic">⚠</span><span class="tk">'+f.tk+'</span><span class="msg">'+f.msg+'</span></div>'; }).join(''); }
+
+    // rows
+    var rows=document.getElementById('rows'); rows.innerHTML='';
+    if(!pos.length){ rows.innerHTML='<tr><td colspan="9" class="empty">No positions tracked yet.</td></tr>'; return; }
+    pos.forEach(function(p){
+      var since=(p.cmp-p.entryPrice)/p.entryPrice*100;
+      var comp=p.currentCompositeScore!=null?p.currentCompositeScore:
+               (p.currentFundamentalScore!=null?Math.round(p.currentFundamentalScore*0.6+p.currentTechnicalScore*0.4):p.entryCompositeScore);
+      var rec=(p.recommendation||'HOLD'); var recKey=rec.split('-')[0].split(' ')[0].toUpperCase();
+      var tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td class="tk">'+p.ticker+(p.illustrative?' <span style="font-size:10px;color:var(--faint)">(demo)</span>':'')+'<span class="nm">'+(p.name||'')+'</span></td>'+
+        '<td class="num">'+fmt(p.entryPrice,1)+'</td>'+
+        '<td class="num">'+fmt(p.cmp,1)+'</td>'+
+        '<td class="num '+cls(since)+'">'+pct(since)+'</td>'+
+        '<td class="num '+cls(p.dayChangePct)+'">'+pct(p.dayChangePct)+'</td>'+
+        '<td class="num">'+fmt(comp)+'</td>'+
+        '<td>'+sparkline(p.priceSeries)+'</td>'+
+        '<td><span class="pill st-'+(p.thesisStatus||'Intact')+'">'+(p.thesisStatus||'Intact')+'</span></td>'+
+        '<td><span class="rec rec-'+recKey+'">'+rec+'</span></td>';
+      rows.appendChild(tr);
+    });
+  }
+  load();
+})();
+</script>
+
+<!-- ===================== EMBEDDED DATA ISLAND (fallback copy of data/portfolio.json) ===================== -->
+<script id="embedded-data" type="application/json">
+{
+  "meta": {
+    "lastUpdated": "2026-06-13",
+    "isIllustrative": true,
+    "illustrativeNotice": "DEMO portfolio. One fictional placeholder position (DEMO-1) is included so the monitoring dashboard renders. Replace with the stocks you actually accept from PHASE 1. Not financial advice.",
+    "weights": { "fundamental": 0.6, "technical": 0.4 },
+    "tiers": { "high": 75, "medium": 60 }
+  },
+  "positions": [
+    {
+      "ticker": "DEMO-1",
+      "name": "Illustrative Forgings Ltd",
+      "illustrative": true,
+      "entryDate": "2026-06-13",
+      "entryPrice": 412.5,
+      "entryFundamentalScore": 78,
+      "entryTechnicalScore": 72,
+      "entryCompositeScore": 76,
+      "entryTier": "High",
+      "thesisSummary": "Import-substitution + EV content growth in precision forgings; capacity doubling against a >2x revenue order book.",
+      "invalidation": "Two quarters of OPM contraction >300bps, order book <1x revenue, promoter pledge appearing, or close below 200-DMA on rising volume.",
+      "cmp": 418.0,
+      "dayChangePct": 1.3,
+      "currentFundamentalScore": 78,
+      "currentTechnicalScore": 73,
+      "thesisStatus": "Intact",
+      "recommendation": "HOLD",
+      "alerts": [],
+      "priceSeries": [412.5,409,415,411,419,416,422,418,420,418],
+      "lastNote": "DEMO entry — no real news. Replace with live tracking."
+    }
+  ],
+  "alerts": []
+}
+</script>
+</body>
+</html>

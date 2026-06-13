@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "screenDate": "2026-06-13",
+    "isIllustrative": true,
+    "illustrativeNotice": "DEMO DATA ONLY. The rows below use fictional placeholder companies (DEMO-*) with invented numbers, purely so the dashboard renders and every feature is visible. They are NOT real stocks, NOT sourced, and NOT recommendations. Replace this file with real entries sourced from authorised sources (see docs/METHODOLOGY.md) before any use. Not financial advice.",
+    "universeScanned": 0,
+    "universePassedFilters": 0,
+    "weights": { "fundamental": 0.6, "technical": 0.4 },
+    "tiers": { "high": 75, "medium": 60 },
+    "liquidityFloorCr": 1.0,
+    "cmpCeiling": 1000,
+    "amfiCutoffNote": "AMFI half-yearly classification (Jan 2026 reference): Large = top 100 by avg 6-month full market cap; Mid = ranks 101-250; Small/Micro = rank 251+. Verify the live AMFI list before each screen; do not hardcode an old cutoff."
+  },
+  "candidates": [
+    {
+      "ticker": "DEMO-1",
+      "name": "Illustrative Forgings Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Auto Components / Forgings",
+      "cmp": 412.5,
+      "marketCapCr": 2850,
+      "capCategory": "Small Cap",
+      "amfiRank": 392,
+      "avgDailyValueCr": 4.2,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 24, "patCagr3y": 31, "growthQuality": 80,
+        "opm": 18.5, "npm": 11.2, "marginTrend": "rising",
+        "roe": 19.4, "roce": 22.1,
+        "debtEquity": 0.35, "interestCoverage": 8.2, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.95,
+        "promoterHolding": 58.2, "promoterTrend": "rising", "pledge": 0, "instEntry": true,
+        "pe": 22, "pb": 3.1, "peg": 0.9,
+        "structuralEdgeScore": 78, "governanceScore": 75
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": true,
+        "nearBreakout": true, "keySupport": 380, "keyResistance": 430,
+        "rsi": 61, "macd": "bullish",
+        "weekHigh52": 468, "weekLow52": 210, "basePatternScore": 72
+      },
+      "priceSeries": [212,225,238,231,247,255,268,262,279,291,285,303,312,308,326,334,329,347,355,361,372,368,381,393,388,401,409,404,408,412.5],
+      "thesis": {
+        "core": "Import-substitution and EV-driven content-per-vehicle expansion in precision forgings; capacity doubling commissioning over the next 4 quarters against a >2x revenue order book.",
+        "catalysts": "New plant ramp, two large export contract wins, PLI-linked customer additions.",
+        "horizon": "12-24 months",
+        "whatMustGoRight": "Plant ramps on schedule and margins hold as fixed costs are absorbed; export demand does not soften.",
+        "risks": "Cyclical auto demand, raw-material (steel) price swings, customer concentration, execution slippage on capex.",
+        "invalidation": "Two consecutive quarters of OPM contraction >300bps, order book falling below 1x revenue, promoter pledge appearing, or close below the 200-DMA on rising volume."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in company page", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE/BSE quote + 30d delivery data", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, liquidity (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-2",
+      "name": "Illustrative Specialty Chemicals Ltd",
+      "exchange": "NSE",
+      "sector": "Specialty Chemicals",
+      "cmp": 688.0,
+      "marketCapCr": 4100,
+      "capCategory": "Small Cap",
+      "amfiRank": 318,
+      "avgDailyValueCr": 6.8,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 19, "patCagr3y": 22, "growthQuality": 72,
+        "opm": 21.0, "npm": 13.0, "marginTrend": "stable",
+        "roe": 17.0, "roce": 18.5,
+        "debtEquity": 0.55, "interestCoverage": 6.0, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.82,
+        "promoterHolding": 51.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 28, "pb": 4.0, "peg": 1.3,
+        "structuralEdgeScore": 70, "governanceScore": 68
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "inline", "rsVsSector": "outperform",
+        "volumeAccumulation": true,
+        "nearBreakout": false, "keySupport": 640, "keyResistance": 720,
+        "rsi": 57, "macd": "bullish",
+        "weekHigh52": 735, "weekLow52": 402, "basePatternScore": 66
+      },
+      "priceSeries": [402,418,431,447,440,463,471,489,478,502,515,508,531,544,538,560,571,566,588,601,595,618,629,624,641,652,667,659,674,688],
+      "thesis": {
+        "core": "Niche fluorination chemistry with a customer-validated moat; structural shift of global supply chains toward India (China+1) supports multi-year volume growth.",
+        "catalysts": "New molecule approvals, multi-year supply agreements, debottlenecking adding capacity at low capex.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Working capital normalises as growth scales; new molecules clear regulatory/customer qualification on time.",
+        "risks": "Rising working-capital intensity, customer/end-market concentration, pricing pressure if competitors add capacity.",
+        "invalidation": "OCF/PAT falling below 0.5 for a full year, debt/equity above 1.0, or loss of an anchor customer."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / annual report", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE quote", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, liquidity (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-3",
+      "name": "Illustrative Defence Electronics Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Defence / Electronics",
+      "cmp": 247.0,
+      "marketCapCr": 1650,
+      "capCategory": "Micro Cap",
+      "amfiRank": 561,
+      "avgDailyValueCr": 2.1,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 28, "patCagr3y": 40, "growthQuality": 65,
+        "opm": 16.0, "npm": 9.5, "marginTrend": "rising",
+        "roe": 16.0, "roce": 17.0,
+        "debtEquity": 0.20, "interestCoverage": 12.0, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.6,
+        "promoterHolding": 62.0, "promoterTrend": "stable", "pledge": 8, "instEntry": false,
+        "pe": 35, "pb": 5.2, "peg": 1.2,
+        "structuralEdgeScore": 82, "governanceScore": 60
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": true, "keySupport": 225, "keyResistance": 258,
+        "rsi": 68, "macd": "bullish",
+        "weekHigh52": 262, "weekLow52": 98, "basePatternScore": 58
+      },
+      "priceSeries": [98,108,121,116,134,145,138,159,171,164,182,196,189,205,214,208,221,229,223,233,238,234,241,244,240,243,246,242,245,247],
+      "thesis": {
+        "core": "Indigenisation of defence electronics with a rising order book; small base means modest absolute order wins move earnings materially.",
+        "catalysts": "Order finalisations, indigenisation policy push, possible JV/technology-transfer announcements.",
+        "horizon": "12-30 months",
+        "whatMustGoRight": "Order execution converts to cash; working-capital build does not choke the balance sheet; pledge does not rise.",
+        "risks": "Lumpy government ordering, long receivable cycles, low liquidity (exit risk), pledge already at 8% and bears watching.",
+        "invalidation": "Pledge rising above 25%, OCF turning negative for a year, order book stalling, or entry into ASM/GSM."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / investor presentation", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE ASM/GSM report", "url": "https://www.nseindia.com/reports/asm", "date": "2026-06-13", "note": "surveillance check (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-4",
+      "name": "Illustrative Consumer Brands Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Consumer / FMCG",
+      "cmp": 905.0,
+      "marketCapCr": 3300,
+      "capCategory": "Small Cap",
+      "amfiRank": 351,
+      "avgDailyValueCr": 3.0,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 14, "patCagr3y": 12, "growthQuality": 60,
+        "opm": 12.0, "npm": 7.0, "marginTrend": "stable",
+        "roe": 14.0, "roce": 15.5,
+        "debtEquity": 0.45, "interestCoverage": 5.5, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.9,
+        "promoterHolding": 55.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 33, "pb": 4.5, "peg": 2.5,
+        "structuralEdgeScore": 55, "governanceScore": 70
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "underperform", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 860, "keyResistance": 960,
+        "rsi": 46, "macd": "neutral",
+        "weekHigh52": 1020, "weekLow52": 720, "basePatternScore": 48
+      },
+      "priceSeries": [980,990,1005,1018,1002,985,968,975,960,948,955,940,928,935,920,930,915,922,908,915,900,910,895,905,912,900,908,898,902,905],
+      "thesis": {
+        "core": "Distribution-led premiumisation in tier-2/3 towns; a steady compounder rather than an explosive re-rating story — included on the watchlist to monitor for a better technical entry.",
+        "catalysts": "New SKU launches, distribution expansion, margin recovery if input costs ease.",
+        "horizon": "24-48 months",
+        "whatMustGoRight": "Volume growth re-accelerates and valuation (PEG 2.5) is justified by a faster earnings ramp.",
+        "risks": "Rich valuation with modest growth, competitive intensity, technical downtrend (below 50-DMA).",
+        "invalidation": "Earnings growth slipping below 10%, market-share loss, or a decisive break of the 200-DMA."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / annual report", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE quote", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, technicals (demo placeholder)" }
+      ]
+    }
+  ],
+  "excluded": [
+    { "name": "Illustrative Penny Co (EXC-1)", "ticker": "EXC-1", "reason": "Placed under GSM Stage II — surveillance red flag. Auto-excluded.", "filter": "Surveillance (GSM)" },
+    { "name": "Illustrative Leveraged Infra (EXC-2)", "ticker": "EXC-2", "reason": "Promoter pledge 41% and rising; debt/equity 2.3. Fails red-flag and balance-sheet checks.", "filter": "Pledge > 25% / leverage" },
+    { "name": "Illustrative Thin-Volume Micro (EXC-3)", "ticker": "EXC-3", "reason": "30-session avg traded value ~Rs 0.3 cr/day — below the Rs 1 cr liquidity floor. Not exitable.", "filter": "Liquidity floor" },
+    { "name": "Illustrative Overpriced Co (EXC-4)", "ticker": "EXC-4", "reason": "CMP Rs 1,840 — above the Rs 1,000 ceiling.", "filter": "CMP ceiling" },
+    { "name": "Illustrative Midcap Co (EXC-5)", "ticker": "EXC-5", "reason": "AMFI rank 210 — mid-cap, outside the small/micro universe.", "filter": "Cap category" },
+    { "name": "Illustrative Loss-Maker (EXC-6)", "ticker": "EXC-6", "reason": "Persistently negative operating cash flow with no credible path to positive; auditor emphasis-of-matter on going concern.", "filter": "Cash flow / going concern" }
+  ]
+}

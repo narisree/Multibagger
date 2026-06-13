@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "lastUpdated": "2026-06-13",
+    "isIllustrative": true,
+    "illustrativeNotice": "DEMO portfolio. One fictional placeholder position (DEMO-1) is included so the monitoring dashboard renders. Replace with the stocks you actually accept from PHASE 1. Not financial advice.",
+    "weights": { "fundamental": 0.6, "technical": 0.4 },
+    "tiers": { "high": 75, "medium": 60 }
+  },
+  "positions": [
+    {
+      "ticker": "DEMO-1",
+      "name": "Illustrative Forgings Ltd",
+      "illustrative": true,
+      "entryDate": "2026-06-13",
+      "entryPrice": 412.5,
+      "entryFundamentalScore": 78,
+      "entryTechnicalScore": 72,
+      "entryCompositeScore": 76,
+      "entryTier": "High",
+      "thesisSummary": "Import-substitution + EV content growth in precision forgings; capacity doubling against a >2x revenue order book.",
+      "invalidation": "Two quarters of OPM contraction >300bps, order book <1x revenue, promoter pledge appearing, or close below 200-DMA on rising volume.",
+      "cmp": 418.0,
+      "dayChangePct": 1.3,
+      "currentFundamentalScore": 78,
+      "currentTechnicalScore": 73,
+      "thesisStatus": "Intact",
+      "recommendation": "HOLD",
+      "alerts": [],
+      "priceSeries": [412.5,409,415,411,419,416,422,418,420,418],
+      "lastNote": "DEMO entry — no real news. Replace with live tracking."
+    }
+  ],
+  "alerts": []
+}

@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Small/Micro-Cap Multibagger Screener — Selection Dashboard</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#272c38;
+    --txt:#e7e9ee; --muted:#9aa3b2; --faint:#6b7383;
+    --high:#2fae66; --high-bg:#13301f; --med:#d9a23b; --med-bg:#332811;
+    --watch:#7c8597; --watch-bg:#20242e; --bad:#d9534f; --bad-bg:#331616;
+    --accent:#5b8cff; --accent-bg:#16203a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1240px;margin:0 auto;padding:18px 20px 80px}
+  header.app{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 24px;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px}
+  header.app h1{font-size:19px;margin:0;font-weight:650;letter-spacing:.2px}
+  header.app .sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .universe{color:var(--muted);font-size:12.5px;text-align:right}
+  .universe b{color:var(--txt)}
+  .banner{margin:14px 0;padding:10px 14px;border:1px solid var(--bad);background:var(--bad-bg);border-radius:8px;color:#f3c9c7;font-size:12.5px}
+  .banner.demo{border-color:var(--med);background:var(--med-bg);color:#f0d9a8}
+  .banner b{color:#fff}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+  .kpi .v{font-size:24px;font-weight:680;letter-spacing:.3px}
+  .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+  .kpi.high .v{color:var(--high)} .kpi.med .v{color:var(--med)} .kpi.watch .v{color:var(--watch)}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:14px}
+  .controls .grp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+  .controls input[type=range]{width:120px;accent-color:var(--accent)}
+  .controls select,.controls input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:5px 8px;font-size:12.5px}
+  .controls .wv{color:var(--txt);font-variant-numeric:tabular-nums;min-width:34px;display:inline-block;text-align:right}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  thead th{position:sticky;top:0;background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+  thead th.num{text-align:right}
+  thead th .arrow{color:var(--accent);font-size:10px}
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr.row{cursor:pointer}
+  tbody tr.row:hover{background:#1b1f29}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tk{font-weight:640}
+  .tk .nm{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.3px}
+  .pill.high{color:#bff3d4;background:var(--high-bg);border:1px solid #225f3c}
+  .pill.med{color:#f0d9a8;background:var(--med-bg);border:1px solid #6a521c}
+  .pill.watch{color:#cbd2de;background:var(--watch-bg);border:1px solid #39404e}
+  .pill.cat{color:#bcd0ff;background:var(--accent-bg);border:1px solid #2c416f}
+  .compbar{position:relative;height:18px;background:var(--panel2);border-radius:5px;overflow:hidden;min-width:120px;border:1px solid var(--line)}
+  .compbar > i{position:absolute;left:0;top:0;bottom:0;border-radius:5px 0 0 5px}
+  .compbar > span{position:absolute;right:6px;top:0;line-height:18px;font-size:11px;font-weight:680;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .split{display:flex;gap:3px;align-items:center;min-width:96px}
+  .split .seg{height:9px;border-radius:2px}
+  .split .f{background:#4f7fe0} .split .t{background:#7d5be0}
+  .split small{color:var(--faint);font-size:10px;margin-left:4px;white-space:nowrap}
+  .detail{background:#12151c}
+  .detail td{padding:0}
+  .detail .inner{padding:16px 18px;display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+  @media(max-width:820px){.detail .inner{grid-template-columns:1fr}.universe{text-align:left}}
+  .detail h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent)}
+  .detail p{margin:0 0 12px;color:#d5d9e2}
+  .detail .inval{border-left:3px solid var(--bad);padding-left:10px;color:#f0c9c7}
+  .detail .meta{display:flex;flex-wrap:wrap;gap:6px 8px;margin-bottom:12px}
+  .chip{font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .chip b{color:var(--txt)}
+  .scoregrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .scoregrid .col h5{margin:0 0 6px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .crow{display:grid;grid-template-columns:84px 1fr 30px;align-items:center;gap:8px;margin:3px 0;font-size:11.5px}
+  .crow .mini{height:7px;background:var(--panel2);border-radius:3px;overflow:hidden}
+  .crow .mini > i{display:block;height:100%}
+  .crow .lab{color:var(--muted)} .crow .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--txt)}
+  .spark{margin-top:4px}
+  .sources{margin-top:6px;font-size:11.5px;color:var(--muted)}
+  .sources li{margin:2px 0}
+  .flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .flag{font-size:11px;color:#f0c9c7;background:var(--bad-bg);border:1px solid #5a2422;border-radius:6px;padding:2px 8px}
+  .ok{font-size:11px;color:#bff3d4;background:var(--high-bg);border:1px solid #225f3c;border-radius:6px;padding:2px 8px}
+  section.excluded{margin-top:26px}
+  section.excluded h2{font-size:14px;margin:0 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .exrow{display:grid;grid-template-columns:200px 150px 1fr;gap:10px;padding:9px 12px;border:1px solid var(--line);border-top:none;background:var(--panel);font-size:12.5px}
+  .exrow:first-of-type{border-top:1px solid var(--line);border-radius:8px 8px 0 0}
+  .exrow:last-of-type{border-radius:0 0 8px 8px}
+  .exrow .why{color:var(--muted)}
+  .exrow .ft{color:#f0c9c7}
+  footer.app{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);color:var(--faint);font-size:11.5px}
+  .empty{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div>
+      <h1>Small/Micro-Cap Multibagger Screener</h1>
+      <div class="sub">Selection, scoring &amp; thesis dashboard (PHASE 1) · Screen date: <span id="screenDate">—</span></div>
+    </div>
+    <div class="universe" id="universe">—</div>
+  </header>
+
+  <div id="demoBanner" class="banner demo" style="display:none"></div>
+  <div class="banner">
+    <b>Not financial advice.</b> Small- and micro-caps are high-risk, illiquid and volatile. This is a research aid only;
+    capital risk and final decisions are the user's own. Every quantitative value must be re-verified against the cited
+    authorised source before any decision.
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="controls">
+    <div class="grp">Weights:
+      <label>Fundamental <input type="range" id="wF" min="0" max="100" value="60" step="5"><span class="wv" id="wFv">60%</span></label>
+      <label>Technical <span class="wv" id="wTv">40%</span></label>
+    </div>
+    <div class="grp">Tier filter:
+      <select id="tierFilter">
+        <option value="all">All actionable + watch</option>
+        <option value="actionable">Actionable (High + Medium)</option>
+        <option value="High">High only</option>
+        <option value="Medium">Medium only</option>
+        <option value="Watch">Watch only</option>
+      </select>
+    </div>
+    <div class="grp">Search <input type="text" id="search" placeholder="ticker / sector…"></div>
+  </div>
+
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th data-sort="name">Ticker / Name</th>
+        <th data-sort="cmp" class="num">CMP ₹</th>
+        <th data-sort="marketCapCr" class="num">Mkt-cap (₹cr)</th>
+        <th data-sort="capCategory">Category</th>
+        <th data-sort="fundamentalScore" class="num">Fund.</th>
+        <th data-sort="technicalScore" class="num">Tech.</th>
+        <th data-sort="composite" class="num">Composite</th>
+        <th data-sort="ftsplit">F / T split</th>
+        <th data-sort="tier">Conviction</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <section class="excluded">
+    <h2>Excluded &amp; why — guardrail audit</h2>
+    <div id="excluded"></div>
+  </section>
+
+  <footer class="app">
+    Composite = Fundamental×weight + Technical×weight (adjustable above). Conviction tiers: High ≥ 75, Medium 60–74, Watch &lt; 60.
+    Scores are computed by a transparent rubric (see <a href="docs/METHODOLOGY.md">docs/METHODOLOGY.md</a>) from sourced inputs.
+    Sources are AMFI, NSE/BSE filings, SEBI, company reports, and reputable aggregators only — never tips or anonymous forums.
+  </footer>
+</div>
+
+<!-- ===================== EMBEDDED SCORING ENGINE (copy of assets/scoring.js) ===================== -->
+<script>
+(function (global) {
+  'use strict';
+  function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+  function ramp(v, lo, hi){ if(hi===lo) return v>=hi?100:0; return clamp(((v-lo)/(hi-lo))*100,0,100); }
+  function rampDown(v, lo, hi){ return 100-ramp(v,lo,hi); }
+  function bool(b,yes,no){ return b?yes:(no===undefined?0:no); }
+  function num(x,d){ return (typeof x==='number'&&!isNaN(x))?x:(d||0); }
+  var F_WEIGHTS={growth:0.20,profitability:0.20,balanceSheet:0.15,cashFlow:0.15,ownership:0.10,valuation:0.10,structuralEdge:0.05,governance:0.05};
+  function fundamentalComponents(f){ f=f||{};
+    var growthRaw=(ramp(num(f.revCagr3y),0,35)*0.5)+(ramp(num(f.patCagr3y),0,40)*0.5);
+    var growth=growthRaw*(0.6+0.4*(num(f.growthQuality,60)/100));
+    var roceScore=ramp(num(f.roce),8,30), roeScore=ramp(num(f.roe),8,28);
+    var marginBonus=f.marginTrend==='rising'?100:(f.marginTrend==='falling'?40:70);
+    var profitability=roceScore*0.5+roeScore*0.3+marginBonus*0.2;
+    var deScore=rampDown(num(f.debtEquity),0.0,1.5), icScore=ramp(num(f.interestCoverage),1,10);
+    var wcScore=f.workingCapitalTrend==='rising'?45:(f.workingCapitalTrend==='falling'?90:70);
+    var balanceSheet=deScore*0.55+icScore*0.30+wcScore*0.15;
+    var cashFlow=f.ocfPositive?(40+ramp(num(f.ocfToPat),0.3,1.0)*0.6):10;
+    var promLevel=ramp(num(f.promoterHolding),25,70);
+    var trendBonus=f.promoterTrend==='rising'?100:(f.promoterTrend==='falling'?30:65);
+    var pledgePenalty=rampDown(num(f.pledge),0,25), instBonus=bool(f.instEntry,100,50);
+    var ownership=promLevel*0.35+trendBonus*0.25+pledgePenalty*0.25+instBonus*0.15;
+    var pegScore=f.peg?rampDown(num(f.peg),0.5,2.5):50, peScore=rampDown(num(f.pe),10,60);
+    var valuation=pegScore*0.6+peScore*0.4;
+    return {growth:clamp(growth,0,100),profitability:clamp(profitability,0,100),balanceSheet:clamp(balanceSheet,0,100),
+      cashFlow:clamp(cashFlow,0,100),ownership:clamp(ownership,0,100),valuation:clamp(valuation,0,100),
+      structuralEdge:clamp(num(f.structuralEdgeScore,50),0,100),governance:clamp(num(f.governanceScore,50),0,100)};
+  }
+  function fundamentalScore(f){ var c=fundamentalComponents(f),s=0; for(var k in F_WEIGHTS) s+=c[k]*F_WEIGHTS[k]; return Math.round(s); }
+  var T_WEIGHTS={trend:0.25,relativeStrength:0.20,structure:0.20,volume:0.15,momentum:0.10,positioning:0.10};
+  function rsScore(v){ return v==='outperform'?100:(v==='inline'?60:20); }
+  function technicalComponents(t){ t=t||{};
+    var trend=bool(t.above50DMA,40,0)+bool(t.above200DMA,40,0)+bool(t.higherHighs,20,0);
+    var relativeStrength=rsScore(t.rsVsSmallcap)*0.6+rsScore(t.rsVsSector)*0.4;
+    var breakout=bool(t.nearBreakout,70,35);
+    var supportCushion=(t.keySupport&&t.cmp)?ramp((t.cmp-t.keySupport)/t.cmp*100,0,12):50;
+    var structure=breakout*0.6+supportCushion*0.4;
+    var volume=bool(t.volumeAccumulation,100,45);
+    var rsi=num(t.rsi,50), rsiScore;
+    if(rsi>=50&&rsi<=68) rsiScore=100; else if(rsi<50) rsiScore=ramp(rsi,30,50); else rsiScore=rampDown(rsi,68,85);
+    var macdScore=t.macd==='bullish'?100:(t.macd==='bearish'?25:60);
+    var momentum=rsiScore*0.6+macdScore*0.4;
+    var range=(t.weekHigh52&&t.weekLow52&&t.weekHigh52>t.weekLow52)?(t.cmp-t.weekLow52)/(t.weekHigh52-t.weekLow52)*100:50;
+    var posScore=range>=35&&range<=85?100:(range<35?ramp(range,0,35):rampDown(range,85,100));
+    var positioning=posScore*0.5+clamp(num(t.basePatternScore,50),0,100)*0.5;
+    return {trend:clamp(trend,0,100),relativeStrength:clamp(relativeStrength,0,100),structure:clamp(structure,0,100),
+      volume:clamp(volume,0,100),momentum:clamp(momentum,0,100),positioning:clamp(positioning,0,100)};
+  }
+  function technicalScore(t){ var c=technicalComponents(t),s=0; for(var k in T_WEIGHTS) s+=c[k]*T_WEIGHTS[k]; return Math.round(s); }
+  function composite(f,t,w){ w=w||{fundamental:0.6,technical:0.4}; return Math.round(f*w.fundamental+t*w.technical); }
+  function tier(c,ti){ ti=ti||{high:75,medium:60}; if(c>=ti.high) return 'High'; if(c>=ti.medium) return 'Medium'; return 'Watch'; }
+  function passesHardFilters(c,cfg){ cfg=cfg||{liquidityFloorCr:1.0,cmpCeiling:1000}; var h=c.hardFilters||{};
+    var liq=(typeof c.avgDailyValueCr==='number')?c.avgDailyValueCr>=cfg.liquidityFloorCr:!!h.liquidityAboveFloor;
+    var cmpOk=(typeof c.cmp==='number')?c.cmp<cfg.cmpCeiling:!!h.cmpBelow1000;
+    return !!(h.listedNSEBSE&&h.capSmallOrMicro&&cmpOk&&liq); }
+  function redFlagList(c){ var r=c.redFlags||{},f=[];
+    if(r.surveillance) f.push('Under surveillance (ASM/GSM/T2T)');
+    if(r.pledgeHigh) f.push('Promoter pledge high/rising');
+    if(r.circuitManipulation) f.push('Circuit hits / possible manipulation');
+    if(r.goingConcern) f.push('Going-concern / auditor / SEBI issue');
+    if(r.negativeOCF) f.push('Persistently negative operating cash flow');
+    return f; }
+  function evaluate(c,cfg){ cfg=cfg||{}; var w=cfg.weights||{fundamental:0.6,technical:0.4}, ti=cfg.tiers||{high:75,medium:60};
+    var t=Object.assign({},c.technicals,{cmp:c.cmp});
+    var f=fundamentalScore(c.fundamentals), ts=technicalScore(t), comp=composite(f,ts,w);
+    return {fundamentalScore:f,technicalScore:ts,fundamentalComponents:fundamentalComponents(c.fundamentals),
+      technicalComponents:technicalComponents(t),composite:comp,tier:tier(comp,ti),
+      passesHardFilters:passesHardFilters(c,cfg),redFlags:redFlagList(c)}; }
+  global.MBScoring={F_WEIGHTS:F_WEIGHTS,T_WEIGHTS:T_WEIGHTS,fundamentalComponents:fundamentalComponents,fundamentalScore:fundamentalScore,
+    technicalComponents:technicalComponents,technicalScore:technicalScore,composite:composite,tier:tier,
+    passesHardFilters:passesHardFilters,redFlagList:redFlagList,evaluate:evaluate};
+})(window);
+</script>
+
+<!-- ===================== EMBEDDED DATA ISLAND (fallback copy of data/candidates.json) ===================== -->
+<script id="embedded-data" type="application/json">
+{
+  "meta": {
+    "screenDate": "2026-06-13",
+    "isIllustrative": true,
+    "illustrativeNotice": "DEMO DATA ONLY. The rows below use fictional placeholder companies (DEMO-*) with invented numbers, purely so the dashboard renders and every feature is visible. They are NOT real stocks, NOT sourced, and NOT recommendations. Replace this file with real entries sourced from authorised sources (see docs/METHODOLOGY.md) before any use. Not financial advice.",
+    "universeScanned": 0,
+    "universePassedFilters": 0,
+    "weights": { "fundamental": 0.6, "technical": 0.4 },
+    "tiers": { "high": 75, "medium": 60 },
+    "liquidityFloorCr": 1.0,
+    "cmpCeiling": 1000,
+    "amfiCutoffNote": "AMFI half-yearly classification (Jan 2026 reference): Large = top 100 by avg 6-month full market cap; Mid = ranks 101-250; Small/Micro = rank 251+. Verify the live AMFI list before each screen; do not hardcode an old cutoff."
+  },
+  "candidates": [
+    {
+      "ticker": "DEMO-1",
+      "name": "Illustrative Forgings Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Auto Components / Forgings",
+      "cmp": 412.5,
+      "marketCapCr": 2850,
+      "capCategory": "Small Cap",
+      "amfiRank": 392,
+      "avgDailyValueCr": 4.2,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 24, "patCagr3y": 31, "growthQuality": 80,
+        "opm": 18.5, "npm": 11.2, "marginTrend": "rising",
+        "roe": 19.4, "roce": 22.1,
+        "debtEquity": 0.35, "interestCoverage": 8.2, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.95,
+        "promoterHolding": 58.2, "promoterTrend": "rising", "pledge": 0, "instEntry": true,
+        "pe": 22, "pb": 3.1, "peg": 0.9,
+        "structuralEdgeScore": 78, "governanceScore": 75
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": true,
+        "nearBreakout": true, "keySupport": 380, "keyResistance": 430,
+        "rsi": 61, "macd": "bullish",
+        "weekHigh52": 468, "weekLow52": 210, "basePatternScore": 72
+      },
+      "priceSeries": [212,225,238,231,247,255,268,262,279,291,285,303,312,308,326,334,329,347,355,361,372,368,381,393,388,401,409,404,408,412.5],
+      "thesis": {
+        "core": "Import-substitution and EV-driven content-per-vehicle expansion in precision forgings; capacity doubling commissioning over the next 4 quarters against a >2x revenue order book.",
+        "catalysts": "New plant ramp, two large export contract wins, PLI-linked customer additions.",
+        "horizon": "12-24 months",
+        "whatMustGoRight": "Plant ramps on schedule and margins hold as fixed costs are absorbed; export demand does not soften.",
+        "risks": "Cyclical auto demand, raw-material (steel) price swings, customer concentration, execution slippage on capex.",
+        "invalidation": "Two consecutive quarters of OPM contraction >300bps, order book falling below 1x revenue, promoter pledge appearing, or close below the 200-DMA on rising volume."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in company page", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE/BSE quote + 30d delivery data", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, liquidity (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-2",
+      "name": "Illustrative Specialty Chemicals Ltd",
+      "exchange": "NSE",
+      "sector": "Specialty Chemicals",
+      "cmp": 688.0,
+      "marketCapCr": 4100,
+      "capCategory": "Small Cap",
+      "amfiRank": 318,
+      "avgDailyValueCr": 6.8,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 19, "patCagr3y": 22, "growthQuality": 72,
+        "opm": 21.0, "npm": 13.0, "marginTrend": "stable",
+        "roe": 17.0, "roce": 18.5,
+        "debtEquity": 0.55, "interestCoverage": 6.0, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.82,
+        "promoterHolding": 51.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 28, "pb": 4.0, "peg": 1.3,
+        "structuralEdgeScore": 70, "governanceScore": 68
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "inline", "rsVsSector": "outperform",
+        "volumeAccumulation": true,
+        "nearBreakout": false, "keySupport": 640, "keyResistance": 720,
+        "rsi": 57, "macd": "bullish",
+        "weekHigh52": 735, "weekLow52": 402, "basePatternScore": 66
+      },
+      "priceSeries": [402,418,431,447,440,463,471,489,478,502,515,508,531,544,538,560,571,566,588,601,595,618,629,624,641,652,667,659,674,688],
+      "thesis": {
+        "core": "Niche fluorination chemistry with a customer-validated moat; structural shift of global supply chains toward India (China+1) supports multi-year volume growth.",
+        "catalysts": "New molecule approvals, multi-year supply agreements, debottlenecking adding capacity at low capex.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Working capital normalises as growth scales; new molecules clear regulatory/customer qualification on time.",
+        "risks": "Rising working-capital intensity, customer/end-market concentration, pricing pressure if competitors add capacity.",
+        "invalidation": "OCF/PAT falling below 0.5 for a full year, debt/equity above 1.0, or loss of an anchor customer."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / annual report", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE quote", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, liquidity (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-3",
+      "name": "Illustrative Defence Electronics Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Defence / Electronics",
+      "cmp": 247.0,
+      "marketCapCr": 1650,
+      "capCategory": "Micro Cap",
+      "amfiRank": 561,
+      "avgDailyValueCr": 2.1,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 28, "patCagr3y": 40, "growthQuality": 65,
+        "opm": 16.0, "npm": 9.5, "marginTrend": "rising",
+        "roe": 16.0, "roce": 17.0,
+        "debtEquity": 0.20, "interestCoverage": 12.0, "workingCapitalTrend": "rising",
+        "ocfPositive": true, "ocfToPat": 0.6,
+        "promoterHolding": 62.0, "promoterTrend": "stable", "pledge": 8, "instEntry": false,
+        "pe": 35, "pb": 5.2, "peg": 1.2,
+        "structuralEdgeScore": 82, "governanceScore": 60
+      },
+      "technicals": {
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": true, "keySupport": 225, "keyResistance": 258,
+        "rsi": 68, "macd": "bullish",
+        "weekHigh52": 262, "weekLow52": 98, "basePatternScore": 58
+      },
+      "priceSeries": [98,108,121,116,134,145,138,159,171,164,182,196,189,205,214,208,221,229,223,233,238,234,241,244,240,243,246,242,245,247],
+      "thesis": {
+        "core": "Indigenisation of defence electronics with a rising order book; small base means modest absolute order wins move earnings materially.",
+        "catalysts": "Order finalisations, indigenisation policy push, possible JV/technology-transfer announcements.",
+        "horizon": "12-30 months",
+        "whatMustGoRight": "Order execution converts to cash; working-capital build does not choke the balance sheet; pledge does not rise.",
+        "risks": "Lumpy government ordering, long receivable cycles, low liquidity (exit risk), pledge already at 8% and bears watching.",
+        "invalidation": "Pledge rising above 25%, OCF turning negative for a year, order book stalling, or entry into ASM/GSM."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / investor presentation", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE ASM/GSM report", "url": "https://www.nseindia.com/reports/asm", "date": "2026-06-13", "note": "surveillance check (demo placeholder)" }
+      ]
+    },
+    {
+      "ticker": "DEMO-4",
+      "name": "Illustrative Consumer Brands Ltd",
+      "exchange": "NSE/BSE",
+      "sector": "Consumer / FMCG",
+      "cmp": 905.0,
+      "marketCapCr": 3300,
+      "capCategory": "Small Cap",
+      "amfiRank": 351,
+      "avgDailyValueCr": 3.0,
+      "illustrative": true,
+      "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
+      "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
+      "fundamentals": {
+        "revCagr3y": 14, "patCagr3y": 12, "growthQuality": 60,
+        "opm": 12.0, "npm": 7.0, "marginTrend": "stable",
+        "roe": 14.0, "roce": 15.5,
+        "debtEquity": 0.45, "interestCoverage": 5.5, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.9,
+        "promoterHolding": 55.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 33, "pb": 4.5, "peg": 2.5,
+        "structuralEdgeScore": 55, "governanceScore": 70
+      },
+      "technicals": {
+        "above50DMA": false, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "underperform", "rsVsSector": "inline",
+        "volumeAccumulation": false,
+        "nearBreakout": false, "keySupport": 860, "keyResistance": 960,
+        "rsi": 46, "macd": "neutral",
+        "weekHigh52": 1020, "weekLow52": 720, "basePatternScore": 48
+      },
+      "priceSeries": [980,990,1005,1018,1002,985,968,975,960,948,955,940,928,935,920,930,915,922,908,915,900,910,895,905,912,900,908,898,902,905],
+      "thesis": {
+        "core": "Distribution-led premiumisation in tier-2/3 towns; a steady compounder rather than an explosive re-rating story — included on the watchlist to monitor for a better technical entry.",
+        "catalysts": "New SKU launches, distribution expansion, margin recovery if input costs ease.",
+        "horizon": "24-48 months",
+        "whatMustGoRight": "Volume growth re-accelerates and valuation (PEG 2.5) is justified by a faster earnings ramp.",
+        "risks": "Rich valuation with modest growth, competitive intensity, technical downtrend (below 50-DMA).",
+        "invalidation": "Earnings growth slipping below 10%, market-share loss, or a decisive break of the 200-DMA."
+      },
+      "sources": [
+        { "label": "ILLUSTRATIVE — replace with Screener.in / annual report", "url": "https://www.screener.in/", "date": "2026-06-13", "note": "fundamentals (demo placeholder)" },
+        { "label": "ILLUSTRATIVE — replace with NSE quote", "url": "https://www.nseindia.com/", "date": "2026-06-13", "note": "CMP, technicals (demo placeholder)" }
+      ]
+    }
+  ],
+  "excluded": [
+    { "name": "Illustrative Penny Co (EXC-1)", "ticker": "EXC-1", "reason": "Placed under GSM Stage II — surveillance red flag. Auto-excluded.", "filter": "Surveillance (GSM)" },
+    { "name": "Illustrative Leveraged Infra (EXC-2)", "ticker": "EXC-2", "reason": "Promoter pledge 41% and rising; debt/equity 2.3. Fails red-flag and balance-sheet checks.", "filter": "Pledge > 25% / leverage" },
+    { "name": "Illustrative Thin-Volume Micro (EXC-3)", "ticker": "EXC-3", "reason": "30-session avg traded value ~Rs 0.3 cr/day — below the Rs 1 cr liquidity floor. Not exitable.", "filter": "Liquidity floor" },
+    { "name": "Illustrative Overpriced Co (EXC-4)", "ticker": "EXC-4", "reason": "CMP Rs 1,840 — above the Rs 1,000 ceiling.", "filter": "CMP ceiling" },
+    { "name": "Illustrative Midcap Co (EXC-5)", "ticker": "EXC-5", "reason": "AMFI rank 210 — mid-cap, outside the small/micro universe.", "filter": "Cap category" },
+    { "name": "Illustrative Loss-Maker (EXC-6)", "ticker": "EXC-6", "reason": "Persistently negative operating cash flow with no credible path to positive; auditor emphasis-of-matter on going concern.", "filter": "Cash flow / going concern" }
+  ]
+}
+</script>
+
+<!-- ===================== DASHBOARD APP ===================== -->
+<script>
+(function(){
+  'use strict';
+  var FW={F_WEIGHTS:MBScoring.F_WEIGHTS,T_WEIGHTS:MBScoring.T_WEIGHTS};
+  var state={data:null,cfg:null,sortKey:'composite',sortDir:-1,open:{}};
+
+  function tierClass(t){ return t==='High'?'high':(t==='Medium'?'med':'watch'); }
+  function fmt(n,d){ if(n==null||isNaN(n)) return '—'; return Number(n).toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+  function colorFor(score){ return score>=75?'var(--high)':(score>=60?'var(--med)':'var(--watch)'); }
+
+  function load(){
+    // Prefer the editable JSON when served over http(s); fall back to the embedded island for offline/file://.
+    var embedded=function(){ try{ return JSON.parse(document.getElementById('embedded-data').textContent); }catch(e){ return null; } };
+    if(location.protocol==='file:'){ boot(embedded()); return; }
+    fetch('data/candidates.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(boot).catch(function(){ boot(embedded()); });
+  }
+
+  function boot(data){
+    if(!data){ document.getElementById('rows').innerHTML='<tr><td colspan="9" class="empty">No data found. Populate data/candidates.json.</td></tr>'; return; }
+    state.data=data;
+    var m=data.meta||{};
+    state.cfg={ weights:m.weights||{fundamental:0.6,technical:0.4}, tiers:m.tiers||{high:75,medium:60},
+      liquidityFloorCr:m.liquidityFloorCr||1.0, cmpCeiling:m.cmpCeiling||1000 };
+    // evaluate every candidate
+    (data.candidates||[]).forEach(function(c){ c._e=MBScoring.evaluate(c,state.cfg); });
+    document.getElementById('screenDate').textContent=m.screenDate||'—';
+    // weights control init
+    var wf=Math.round((state.cfg.weights.fundamental)*100);
+    document.getElementById('wF').value=wf;
+    if(m.isIllustrative){ var b=document.getElementById('demoBanner'); b.style.display='block';
+      b.innerHTML='<b>Illustrative demo data.</b> '+(m.illustrativeNotice||'These rows are fictional placeholders so the dashboard renders. Replace with real, sourced entries before use.'); }
+    bindControls();
+    render();
+  }
+
+  function bindControls(){
+    var wF=document.getElementById('wF');
+    wF.addEventListener('input',function(){
+      var f=parseInt(wF.value,10); state.cfg.weights={fundamental:f/100,technical:(100-f)/100};
+      document.getElementById('wFv').textContent=f+'%'; document.getElementById('wTv').textContent=(100-f)+'%';
+      (state.data.candidates||[]).forEach(function(c){ c._e=MBScoring.evaluate(c,state.cfg); });
+      render();
+    });
+    document.getElementById('tierFilter').addEventListener('change',render);
+    document.getElementById('search').addEventListener('input',render);
+    document.querySelectorAll('thead th[data-sort]').forEach(function(th){
+      th.addEventListener('click',function(){ var k=th.getAttribute('data-sort');
+        if(state.sortKey===k){ state.sortDir*=-1; } else { state.sortKey=k; state.sortDir=(k==='name'||k==='capCategory'||k==='tier')?1:-1; }
+        render(); });
+    });
+  }
+
+  function sortVal(c,k){
+    if(k==='composite') return c._e.composite;
+    if(k==='fundamentalScore') return c._e.fundamentalScore;
+    if(k==='technicalScore') return c._e.technicalScore;
+    if(k==='tier') return c._e.composite; // tier sorts by underlying composite
+    if(k==='ftsplit') return c._e.fundamentalScore - c._e.technicalScore;
+    return c[k];
+  }
+
+  function visible(){
+    var tf=document.getElementById('tierFilter').value;
+    var q=(document.getElementById('search').value||'').toLowerCase().trim();
+    var list=(state.data.candidates||[]).slice();
+    list=list.filter(function(c){
+      var t=c._e.tier;
+      if(tf==='actionable' && t==='Watch') return false;
+      if(tf==='High'&&t!=='High') return false;
+      if(tf==='Medium'&&t!=='Medium') return false;
+      if(tf==='Watch'&&t!=='Watch') return false;
+      if(q){ var hay=(c.ticker+' '+c.name+' '+c.sector).toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    list.sort(function(a,b){ var av=sortVal(a,state.sortKey),bv=sortVal(b,state.sortKey);
+      if(typeof av==='string'){ return av.localeCompare(bv)*state.sortDir; }
+      return (av-bv)*state.sortDir; });
+    return list;
+  }
+
+  function kpis(){
+    var cs=state.data.candidates||[];
+    var high=cs.filter(function(c){return c._e.tier==='High';}).length;
+    var med=cs.filter(function(c){return c._e.tier==='Medium';}).length;
+    var watch=cs.filter(function(c){return c._e.tier==='Watch';}).length;
+    var avg=cs.length?Math.round(cs.reduce(function(s,c){return s+c._e.composite;},0)/cs.length):0;
+    var el=document.getElementById('kpis');
+    el.innerHTML=''+
+      kpi('Candidates',cs.length,'')+
+      kpi('High conviction',high,'high')+
+      kpi('Medium',med,'med')+
+      kpi('Watch',watch,'watch')+
+      kpi('Avg composite',avg,'');
+    var m=state.data.meta||{};
+    document.getElementById('universe').innerHTML=
+      '<b>'+(m.universeScanned||'—')+'</b> scanned · <b>'+(m.universePassedFilters!=null?m.universePassedFilters:cs.length)+'</b> passed all filters'+
+      '<br>Liquidity floor ≥ ₹'+(state.cfg.liquidityFloorCr)+' cr/day · CMP &lt; ₹'+state.cfg.cmpCeiling;
+  }
+  function kpi(label,val,cls){ return '<div class="kpi '+cls+'"><div class="v">'+val+'</div><div class="l">'+label+'</div></div>'; }
+
+  function headerArrows(){
+    document.querySelectorAll('thead th[data-sort]').forEach(function(th){
+      var base=th.textContent.replace(/[▲▼]\s*$/,'').trim();
+      if(th.getAttribute('data-sort')===state.sortKey){ th.innerHTML=base+' <span class="arrow">'+(state.sortDir<0?'▼':'▲')+'</span>'; }
+      else { th.textContent=base; }
+    });
+  }
+
+  function render(){
+    kpis(); headerArrows();
+    var rows=document.getElementById('rows'); rows.innerHTML='';
+    var list=visible();
+    if(!list.length){ rows.innerHTML='<tr><td colspan="9" class="empty">No candidates match the current filter.</td></tr>'; renderExcluded(); return; }
+    list.forEach(function(c){
+      var e=c._e, tc=tierClass(e.tier);
+      var tr=document.createElement('tr'); tr.className='row';
+      var fsplit=Math.round(e.fundamentalScore*0.6+0.5), tsplit=Math.round(e.technicalScore*0.4+0.5);
+      tr.innerHTML=
+        '<td class="tk">'+c.ticker+(c.illustrative?' <span class="chip">demo</span>':'')+'<span class="nm">'+c.name+' · '+c.sector+'</span></td>'+
+        '<td class="num">'+fmt(c.cmp,1)+'</td>'+
+        '<td class="num">'+fmt(c.marketCapCr)+'</td>'+
+        '<td><span class="pill cat">'+(c.capCategory||'—')+'</span></td>'+
+        '<td class="num" style="color:'+colorFor(e.fundamentalScore)+'">'+e.fundamentalScore+'</td>'+
+        '<td class="num" style="color:'+colorFor(e.technicalScore)+'">'+e.technicalScore+'</td>'+
+        '<td class="num"><div class="compbar"><i style="width:'+e.composite+'%;background:'+colorFor(e.composite)+'"></i><span>'+e.composite+'</span></div></td>'+
+        '<td><div class="split">'+
+          '<div class="seg f" style="width:'+(e.fundamentalScore*0.55)+'px"></div>'+
+          '<div class="seg t" style="width:'+(e.technicalScore*0.45)+'px"></div>'+
+          '<small>F'+e.fundamentalScore+' / T'+e.technicalScore+'</small></div></td>'+
+        '<td><span class="pill '+tc+'">'+e.tier+'</span></td>';
+      tr.addEventListener('click',function(){ toggle(c.ticker); });
+      rows.appendChild(tr);
+      if(state.open[c.ticker]){ rows.appendChild(detailRow(c)); }
+    });
+    renderExcluded();
+  }
+
+  function toggle(tk){ state.open[tk]=!state.open[tk]; render(); }
+
+  function compRow(label,val){
+    var col=colorFor(val);
+    return '<div class="crow"><span class="lab">'+label+'</span>'+
+      '<span class="mini"><i style="width:'+val+'%;background:'+col+'"></i></span>'+
+      '<span class="val">'+val+'</span></div>';
+  }
+
+  function sparkline(series){
+    if(!series||series.length<2) return '';
+    var w=260,h=46,pad=3, min=Math.min.apply(null,series),max=Math.max.apply(null,series),rng=(max-min)||1;
+    var pts=series.map(function(v,i){ var x=pad+i*(w-2*pad)/(series.length-1); var y=h-pad-((v-min)/rng)*(h-2*pad); return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+    var up=series[series.length-1]>=series[0];
+    var col=up?'var(--high)':'var(--bad)';
+    return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">'+
+      '<polyline fill="none" stroke="'+col+'" stroke-width="1.6" points="'+pts+'"/></svg>';
+  }
+
+  function detailRow(c){
+    var e=c._e, fc=e.fundamentalComponents, tcm=e.technicalComponents, f=c.fundamentals||{}, t=c.technicals||{}, th=c.thesis||{};
+    var tr=document.createElement('tr'); tr.className='detail';
+    var td=document.createElement('td'); td.colSpan=9;
+    var flags=e.redFlags.length?('<div class="flags">'+e.redFlags.map(function(x){return '<span class="flag">⚠ '+x+'</span>';}).join('')+'</div>')
+      :'<div class="flags"><span class="ok">✓ No red flags</span>'+(e.passesHardFilters?'<span class="ok">✓ Passes all hard filters</span>':'<span class="flag">⚠ Fails a hard filter</span>')+'</div>';
+    var srcs=(c.sources||[]).map(function(s){ return '<li>'+(s.url?'<a href="'+s.url+'" target="_blank" rel="noopener">'+s.label+'</a>':s.label)+' — '+(s.note||'')+' <span style="color:var(--faint)">('+s.date+')</span></li>'; }).join('');
+    td.innerHTML=
+      '<div class="inner">'+
+        '<div>'+
+          '<div class="meta">'+
+            '<span class="chip">ROCE <b>'+fmt(f.roce,1)+'%</b></span>'+
+            '<span class="chip">ROE <b>'+fmt(f.roe,1)+'%</b></span>'+
+            '<span class="chip">D/E <b>'+fmt(f.debtEquity,2)+'</b></span>'+
+            '<span class="chip">Rev CAGR(3y) <b>'+fmt(f.revCagr3y)+'%</b></span>'+
+            '<span class="chip">PAT CAGR(3y) <b>'+fmt(f.patCagr3y)+'%</b></span>'+
+            '<span class="chip">OPM <b>'+fmt(f.opm,1)+'%</b></span>'+
+            '<span class="chip">P/E <b>'+fmt(f.pe,1)+'</b></span>'+
+            '<span class="chip">PEG <b>'+fmt(f.peg,2)+'</b></span>'+
+            '<span class="chip">Promoter <b>'+fmt(f.promoterHolding,1)+'%</b></span>'+
+            '<span class="chip">Pledge <b>'+fmt(f.pledge,1)+'%</b></span>'+
+            '<span class="chip">Liq <b>₹'+fmt(c.avgDailyValueCr,1)+'cr/d</b></span>'+
+          '</div>'+
+          flags+
+          '<h4 style="margin-top:14px">Multibagger thesis — the "why now"</h4><p>'+(th.core||'—')+'</p>'+
+          '<h4>Catalysts &amp; horizon</h4><p>'+(th.catalysts||'—')+' <b>('+(th.horizon||'—')+')</b></p>'+
+          '<h4>What must go right</h4><p>'+(th.whatMustGoRight||'—')+'</p>'+
+          '<h4>Key risks</h4><p>'+(th.risks||'—')+'</p>'+
+          '<h4>Invalidation triggers — exit if…</h4><p class="inval">'+(th.invalidation||'—')+'</p>'+
+          '<h4>Sources</h4><ul class="sources">'+(srcs||'<li>—</li>')+'</ul>'+
+        '</div>'+
+        '<div>'+
+          '<div class="spark">'+sparkline(c.priceSeries)+'<div style="color:var(--faint);font-size:11px">~recent price path (illustrative scale)</div></div>'+
+          '<div class="scoregrid" style="margin-top:12px">'+
+            '<div class="col"><h5>Fundamental — '+e.fundamentalScore+'</h5>'+
+              compRow('Growth',Math.round(fc.growth))+compRow('Profitability',Math.round(fc.profitability))+
+              compRow('Bal. sheet',Math.round(fc.balanceSheet))+compRow('Cash flow',Math.round(fc.cashFlow))+
+              compRow('Ownership',Math.round(fc.ownership))+compRow('Valuation',Math.round(fc.valuation))+
+              compRow('Struct. edge',Math.round(fc.structuralEdge))+compRow('Governance',Math.round(fc.governance))+
+            '</div>'+
+            '<div class="col"><h5>Technical — '+e.technicalScore+'</h5>'+
+              compRow('Trend',Math.round(tcm.trend))+compRow('Rel. strength',Math.round(tcm.relativeStrength))+
+              compRow('Structure',Math.round(tcm.structure))+compRow('Volume',Math.round(tcm.volume))+
+              compRow('Momentum',Math.round(tcm.momentum))+compRow('52w / base',Math.round(tcm.positioning))+
+              '<div style="margin-top:8px"><span class="chip">RSI <b>'+fmt(t.rsi)+'</b></span> <span class="chip">MACD <b>'+(t.macd||'—')+'</b></span></div>'+
+              '<div style="margin-top:4px"><span class="chip">52w <b>'+fmt(t.weekLow52)+'–'+fmt(t.weekHigh52)+'</b></span></div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    tr.appendChild(td);
+    return tr;
+  }
+
+  function renderExcluded(){
+    var ex=(state.data.excluded||[]); var el=document.getElementById('excluded');
+    if(!ex.length){ el.innerHTML='<div class="exrow"><span>—</span><span></span><span class="why">No exclusions recorded.</span></div>'; return; }
+    el.innerHTML=ex.map(function(x){
+      return '<div class="exrow"><span class="tk">'+(x.name||x.ticker)+'</span><span class="ft">'+(x.filter||'')+'</span><span class="why">'+(x.reason||'')+'</span></div>';
+    }).join('');
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
