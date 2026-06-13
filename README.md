@@ -37,7 +37,16 @@ Open the two dashboards directly in a browser — no build step, no server, no d
 |---|---|
 | [`index.html`](index.html) | Landing page linking both dashboards (the GitHub Pages entry point) |
 | [`screener.html`](screener.html) | **PHASE 1** — selection, scoring & thesis dashboard |
-| [`tracker.html`](tracker.html) | **PHASE 2** — daily monitoring dashboard |
+| [`tracker.html`](tracker.html) | **PHASE 2** — daily monitoring + ₹50k paper portfolio |
+
+### Paper portfolio (₹50,000 conviction-weighted test)
+
+`tracker.html` includes a **paper-trading** experiment: ₹50,000 booked across 5 multibagger picks,
+weighted by composite score, to measure how the selection actually performs. It marks to market via
+the same pipeline, shows total/per-stock P&L, a 6-month review countdown (review date 2026-12-13),
+and a Nifty Smallcap benchmark. Data lives in `data/paper-trades.json`. **It reports *realized* P&L
+as time passes — it does not forecast a future number.** Buy prices seed as June-2026 snapshots and
+are re-executed at the real market price on the first live fetch.
 
 Each dashboard is self-contained and works offline (`file://`). When served over `http(s)` it reads
 the editable JSON in `data/`; offline it falls back to an embedded copy of that data baked into the

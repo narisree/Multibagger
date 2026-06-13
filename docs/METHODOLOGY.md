@@ -152,6 +152,24 @@ No invalidation triggers → the stock is not done and should not enter the trac
 
 ---
 
+## 5b. Paper-trading test (₹50,000)
+
+To measure whether the selection method actually works, a **paper portfolio** books a fixed
+**₹50,000** across the current 5 multibagger picks and tracks it forward. Data: `data/paper-trades.json`;
+view: the Paper Portfolio section of `tracker.html`.
+
+- **Allocation — conviction-weighted:** each pick's weight = its composite score ÷ Σ(composites),
+  times ₹50,000, floored to whole shares; the remainder is held as cash. Higher-conviction names get
+  more capital, so the test grades both *selection* and *sizing*.
+- **Execution:** buy prices seed as point-in-time snapshots and are **re-executed at the real market
+  price on the first live fetch** (so the book starts from a genuine, dated entry).
+- **Measurement:** marked to market daily by the fetch pipeline; reports per-stock and total P&L (₹
+  and %), cash, a **6-month review date** (2026-12-13) with a live countdown, and a **Nifty Smallcap
+  250 benchmark** so out/under-performance vs simply buying the index is visible.
+- **Honesty:** this is **realized** performance accruing over time — *not* a forecast of the
+  six-month number. At the review date it feeds the periodic methodology review (§5): did the
+  high-conviction names actually outperform? Was conviction-weighting better than equal-weighting?
+
 ## 6. Data schema (per candidate)
 
 See `data/candidates.json` for the full shape. Key objects: `hardFilters`, `redFlags`,

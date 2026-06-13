@@ -41,9 +41,28 @@
 
 ---
 
-## Watchlist (screened 2026-06-13, not accepted)
-HBLENGINE (Medium 67) · MAHSEAMLES (Medium 67) · CONTROLPR (Medium 64) · GOLDIAM (Watch 56) · IONEXCHANG (Watch 43).
-Excluded by guardrails: GENUSPOWER (pledge ~69%), NESCO & POCL (CMP > ₹1,000).
+## Paper Portfolio — ₹50,000 (started 2026-06-13, review 2026-12-13)
+Conviction-weighted across the fresh-5 screen. Realized mark-to-market; not a forecast. Lives in
+`../data/paper-trades.json`, shown in `../tracker.html`. Buy prices are June-2026 snapshots,
+re-executed at real prices on the first live fetch.
+
+| Pick | Conviction | Composite | Weight | Buy ₹ (prov.) | Shares | Invested ₹ |
+|---|---|---|---|---|---|---|
+| SKYGOLD | High | 78 | 24.2% | 513.05 | 23 | 11,800 |
+| SKIPPER | Medium | 73 | 22.7% | 572.70 | 19 | 10,881 |
+| ELECON | Medium | 66 | 20.5% | 510.00 | 20 | 10,200 |
+| CYIENTDLM | Watch | 54 | 16.8% | 452.00 | 18 | 8,136 |
+| TIMETECHNO | Watch | 51 | 15.8% | 167.00 | 47 | 7,849 |
+
+Invested ₹48,866 · Cash ₹1,134 · Capital ₹50,000. Benchmark: Nifty Smallcap 250 (set on first fetch).
+
+## Fresh-5 screen (2026-06-13)
+The current screener shortlist is the five above. Excluded by guardrails: TRITURBINE (ASM),
+ZENTEC & AETHER (CMP > ₹1,000), DCXINDIA (loss-making), TARIL (pledge), INOXWIND (promoters selling).
+
+## Archived prior screen (2026-06-13, original 6)
+MARKSANS (tracked, above) · HBLENGINE · MAHSEAMLES · CONTROLPR · GOLDIAM · IONEXCHANG.
+Saved at `../data/archive/candidates-2026-06-13-original6.json`.
 
 ---
 

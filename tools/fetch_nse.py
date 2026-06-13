@@ -390,13 +390,84 @@ def run_portfolio(nse):
     print(f"\nUpdated {n} position(s) from NSE -> data/portfolio.json")
 
 
+def fetch_index_level(nse, index_name):
+    """Best-effort current level of a named NSE index (e.g. 'NIFTY SMALLCAP 250')."""
+    if not index_name:
+        return None
+    try:
+        idxs = nse.listIndices()
+    except Exception:  # noqa: BLE001
+        return None
+    rows = idxs.get("data") if isinstance(idxs, dict) else idxs
+    if not isinstance(rows, list):
+        return None
+    for r in rows:
+        name = dig(r, "index") or dig(r, "indexName") or dig(r, "indexSymbol")
+        if name and index_name.upper() in str(name).upper():
+            return first_num(r, ("last",), ("lastPrice",), ("previousClose",))
+    return None
+
+
+def run_paper(nse):
+    """Refresh the ₹50k paper book's currentPrice + benchmark; execute provisional buys on first run."""
+    f = ROOT / "data" / "paper-trades.json"
+    data = json.loads(f.read_text())
+    meta = data.get("meta", {})
+    cap = meta.get("startingCapital", 50000)
+    provisional = meta.get("isProvisional", False)
+    n = 0
+    for h in data.get("holdings", []):
+        sym = h.get("ticker")
+        if not sym:
+            continue
+        q = fetch_quote(nse, sym)
+        time.sleep(RATE_SLEEP)
+        if not q or q["price"] is None:
+            print(f"- {sym}: no quote, currentPrice unchanged")
+            continue
+        h["currentPrice"] = q["price"]
+        if provisional and h.get("buyPriceProvisional"):
+            target = cap * (h.get("weightPct", 0) / 100.0)
+            h["buyPrice"] = q["price"]
+            h["shares"] = int(target // q["price"]) if q["price"] else h.get("shares", 0)
+            h["invested"] = round(h["shares"] * q["price"], 2)
+            h["buyPriceProvisional"] = False
+            h["buyDate"] = TODAY
+        since = ((q["price"] - h["buyPrice"]) / h["buyPrice"] * 100) if h.get("buyPrice") else None
+        print(f"✓ {sym}: CMP ₹{q['price']}" + (f" ({since:+.1f}% vs buy)" if since is not None else ""))
+        n += 1
+    invested = sum(h.get("invested", 0) for h in data.get("holdings", []))
+    data["cash"] = round(cap - invested, 2)
+    data.setdefault("totals", {})["invested"] = round(invested, 2)
+
+    bench = meta.get("benchmark", {})
+    lvl = fetch_index_level(nse, bench.get("nseIndex"))
+    if lvl is not None:
+        if not bench.get("startLevel"):
+            bench["startLevel"] = lvl
+        bench["currentLevel"] = lvl
+        meta["benchmark"] = bench
+        print(f"  · benchmark {bench.get('name')}: {lvl}")
+    if provisional and all(not h.get("buyPriceProvisional") for h in data.get("holdings", [])):
+        meta["isProvisional"] = False
+    meta["lastUpdated"] = TODAY
+    data["meta"] = meta
+    f.write_text(json.dumps(data, indent=2) + "\n")
+    print(f"\nUpdated {n} paper holding(s) from NSE -> data/paper-trades.json; cash ₹{data['cash']}")
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else ""
-    if mode not in ("--candidates", "--portfolio"):
-        sys.exit("Usage: python tools/fetch_nse.py [--candidates|--portfolio]")
+    if mode not in ("--candidates", "--portfolio", "--paper"):
+        sys.exit("Usage: python tools/fetch_nse.py [--candidates|--portfolio|--paper]")
     nse = get_nse()
     try:
-        run_candidates(nse) if mode == "--candidates" else run_portfolio(nse)
+        if mode == "--candidates":
+            run_candidates(nse)
+        elif mode == "--portfolio":
+            run_portfolio(nse)
+        else:
+            run_paper(nse)
     finally:
         try:
             nse.exit()

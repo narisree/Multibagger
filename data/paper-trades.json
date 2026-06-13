@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "startDate": "2026-06-13",
+    "startingCapital": 50000,
+    "horizonMonths": 6,
+    "reviewDate": "2026-12-13",
+    "allocation": "conviction-weighted (weight proportional to composite score)",
+    "lastUpdated": "2026-06-13",
+    "isProvisional": true,
+    "note": "Buy prices are provisional June-2026 snapshots; the first live Actions fetch re-executes each holding at the real market price and recomputes shares. P&L is REALIZED mark-to-market as time passes — NOT a forecast of the 6-month number. Not financial advice.",
+    "benchmark": { "name": "Nifty Smallcap 250", "nseIndex": "NIFTY SMALLCAP 250", "yahooSymbol": "^CNXSC", "startLevel": null, "currentLevel": null }
+  },
+  "holdings": [
+    {
+      "ticker": "SKYGOLD", "yahooSymbol": "SKYGOLD.NS", "name": "Sky Gold & Diamonds",
+      "sector": "Gems & Jewellery (B2B)", "conviction": "High", "composite": 78, "weightPct": 24.2,
+      "buyDate": "2026-06-13", "buyPrice": 513.05, "buyPriceProvisional": true,
+      "shares": 23, "invested": 11800.15, "currentPrice": 513.05,
+      "thesis": "B2B jewellery scaling with India's market formalisation; ROCE ~30%, no pledge, sales +77% YoY.",
+      "invalidation": "Net debt rising not falling, OCF persistently weak, anchor-customer loss, or pledge appearing.",
+      "priceSeries": [255,272,290,283,305,325,318,345,372,360,390,415,405,432,448,438,460,448,470,488,478,500,490,505,520,510,525,515,520,513.05]
+    },
+    {
+      "ticker": "SKIPPER", "yahooSymbol": "SKIPPER.NS", "name": "Skipper Ltd",
+      "sector": "Power T&D / Transmission Towers", "conviction": "Medium", "composite": 73, "weightPct": 22.7,
+      "buyDate": "2026-06-13", "buyPrice": 572.70, "buyPriceProvisional": true,
+      "shares": 19, "invested": 10881.30, "currentPrice": 572.70,
+      "thesis": "India's largest transmission-tower maker; grid-capex super-cycle, no pledge, PAT +63% Q4.",
+      "invalidation": "Order inflow stalling, OCF negative, D/E > 1.0, pledge, or surveillance entry.",
+      "priceSeries": [375,392,410,402,425,445,438,460,485,478,500,520,512,535,525,510,525,540,532,548,540,555,548,560,552,565,558,568,575,572.70]
+    },
+    {
+      "ticker": "ELECON", "yahooSymbol": "ELECON.NS", "name": "Elecon Engineering",
+      "sector": "Capital Goods / Industrial Gears", "conviction": "Medium", "composite": 66, "weightPct": 20.5,
+      "buyDate": "2026-06-13", "buyPrice": 510.00, "buyPriceProvisional": true,
+      "shares": 20, "invested": 10200.00, "currentPrice": 510.00,
+      "thesis": "Asia's top industrial-gear maker; debt-free, ROCE ~25%, multi-sector capex tailwind.",
+      "invalidation": "Order-inflow decline 2 quarters, OPM -300bps, ROCE < 18%, pledge, or close below 200-DMA.",
+      "priceSeries": [420,438,455,447,470,488,479,500,520,512,535,555,548,570,560,548,560,540,528,545,532,520,505,515,500,508,495,505,512,510]
+    },
+    {
+      "ticker": "CYIENTDLM", "yahooSymbol": "CYIENTDLM.NS", "name": "Cyient DLM",
+      "sector": "Electronics Manufacturing (EMS)", "conviction": "Watch", "composite": 54, "weightPct": 16.8,
+      "buyDate": "2026-06-13", "buyPrice": 452.00, "buyPriceProvisional": true,
+      "shares": 18, "invested": 8136.00, "currentPrice": 452.00,
+      "thesis": "EMS growing ~30% CAGR; record order book (B2B 1.46), ROCE ~10% targeted to ~25% — high risk/upside.",
+      "invalidation": "ROCE not improving over 4-6 quarters, book-to-bill < 1.0, WC ballooning, or a dilutive raise.",
+      "priceSeries": [300,318,335,328,350,372,360,385,372,360,348,362,378,365,352,368,380,372,360,375,388,402,392,410,425,415,430,442,448,452]
+    },
+    {
+      "ticker": "TIMETECHNO", "yahooSymbol": "TIMETECHNO.NS", "name": "Time Technoplast",
+      "sector": "Industrial Materials / Packaging", "conviction": "Watch", "composite": 51, "weightPct": 15.8,
+      "buyDate": "2026-06-13", "buyPrice": 167.00, "buyPriceProvisional": true,
+      "shares": 47, "invested": 7849.00, "currentPrice": 167.00,
+      "thesis": "World #2 composite cylinders (CNG/H2/LPG) + #1 plastic drums; cheap (~22x), debt trending down.",
+      "invalidation": "ROCE stalling < 14%, value-added mix not improving, debt rising, or WC deteriorating.",
+      "priceSeries": [205,210,202,196,188,192,184,178,182,175,180,172,168,174,170,165,171,167,163,169,166,162,168,170,166,169,165,168,166,167]
+    }
+  ],
+  "cash": 1133.55,
+  "totals": { "invested": 48866.45 }
+}

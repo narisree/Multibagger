@@ -51,6 +51,16 @@
   .spark{vertical-align:middle}
   footer.app{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);color:var(--faint);font-size:11.5px}
   .empty{padding:30px;text-align:center;color:var(--muted)}
+  .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:26px 0 10px;font-weight:600}
+  .section-title .hint{text-transform:none;letter-spacing:0;color:var(--faint);font-size:11.5px;font-weight:400;margin-left:8px}
+  .paper-hd{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
+  .pcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .pcard .v{font-size:17px;font-weight:680;letter-spacing:.2px}
+  .pcard .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+  .cv-High{color:#bff3d4;background:var(--up-bg);border:1px solid #225f3c}
+  .cv-Medium{color:#f0d9a8;background:var(--reduce-bg);border:1px solid #6a521c}
+  .cv-Watch{color:#cbd2de;background:#20242e;border:1px solid #39404e}
+  .prov{color:var(--reduce);font-weight:700}
 </style>
 </head>
 <body>
@@ -71,6 +81,29 @@
     <div class="body" id="alertBody"></div>
   </div>
 
+  <div class="section-title">📈 Paper Portfolio — ₹50,000<span class="hint">5 multibagger picks · conviction-weighted · 6-month test · realized P&amp;L, not a forecast</span></div>
+  <div id="paperProv" class="banner demo" style="display:none"></div>
+  <div class="paper-hd" id="paperKpis"></div>
+  <table id="paperTbl">
+    <thead>
+      <tr>
+        <th>Pick / Name</th>
+        <th class="num">Conv.</th>
+        <th class="num">Wt %</th>
+        <th class="num">Buy ₹</th>
+        <th class="num">Sh</th>
+        <th class="num">Invested ₹</th>
+        <th class="num">CMP ₹</th>
+        <th class="num">Value ₹</th>
+        <th class="num">P&amp;L ₹</th>
+        <th class="num">P&amp;L %</th>
+        <th>Trend</th>
+      </tr>
+    </thead>
+    <tbody id="paperRows"></tbody>
+  </table>
+
+  <div class="section-title">Accepted positions (PHASE 2)<span class="hint">stocks you've formally accepted into live tracking</span></div>
   <table>
     <thead>
       <tr>
@@ -159,7 +192,64 @@
       rows.appendChild(tr);
     });
   }
+
+  // ---- Paper Portfolio (₹50,000 conviction-weighted test) ----
+  function money(n){ return (n==null||isNaN(n))?'—':'₹'+fmt(n,0); }
+  function pcard(v,l){ return '<div class="pcard"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>'; }
+  function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+
+  function loadPaper(){
+    var emb=function(){ try{ return JSON.parse(document.getElementById('paper-data').textContent); }catch(e){ return null; } };
+    if(location.protocol==='file:'){ renderPaper(emb()); return; }
+    fetch('data/paper-trades.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(renderPaper).catch(function(){ renderPaper(emb()); });
+  }
+
+  function renderPaper(data){
+    if(!data||!data.holdings){ return; }
+    var m=data.meta||{}, hold=data.holdings||[], cash=data.cash||0, cap=m.startingCapital||50000;
+    var invested=0, value=0;
+    hold.forEach(function(h){ var cp=(h.currentPrice!=null?h.currentPrice:h.buyPrice);
+      var v=cp*h.shares; h._value=v; h._pnl=v-h.invested; h._pnlPct=h.invested?h._pnl/h.invested*100:0;
+      invested+=h.invested; value+=v; });
+    var totalValue=value+cash, totalPnl=totalValue-cap, totalPnlPct=cap?totalPnl/cap*100:0;
+    var bench=m.benchmark||{}, benchRet=(bench.startLevel&&bench.currentLevel)?(bench.currentLevel-bench.startLevel)/bench.startLevel*100:null;
+    var now=new Date(), start=m.startDate?new Date(m.startDate):now, review=m.reviewDate?new Date(m.reviewDate):now;
+    var elapsed=Math.max(0,daysBetween(start,now)), toReview=Math.max(0,daysBetween(now,review));
+
+    var pb=document.getElementById('paperProv');
+    if(m.isProvisional){ pb.style.display='block'; pb.innerHTML='<b>Provisional entry.</b> '+(m.note||''); }
+
+    document.getElementById('paperKpis').innerHTML=
+      pcard(money(cap),'Capital')+
+      pcard(money(totalValue),'Current value')+
+      pcard('<span class="'+cls(totalPnl)+'">'+(totalPnl>=0?'+':'')+'₹'+fmt(totalPnl,0)+'</span>','Total P&L (₹)')+
+      pcard('<span class="'+cls(totalPnl)+'">'+pct(totalPnlPct)+'</span>','Total P&L (%)')+
+      pcard(benchRet==null?'pending':('<span class="'+cls(benchRet)+'">'+pct(benchRet)+'</span>'),'Nifty Smallcap')+
+      pcard(elapsed+'d&nbsp;/&nbsp;'+toReview+'d','Elapsed / to review');
+
+    var rows=document.getElementById('paperRows'); rows.innerHTML='';
+    hold.forEach(function(h){
+      var tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td class="tk">'+h.ticker+'<span class="nm">'+(h.name||'')+' · '+(h.sector||'')+'</span></td>'+
+        '<td class="num"><span class="pill cv-'+(h.conviction||'Watch')+'">'+(h.conviction||'')+'</span></td>'+
+        '<td class="num">'+fmt(h.weightPct,1)+'</td>'+
+        '<td class="num">'+fmt(h.buyPrice,1)+(h.buyPriceProvisional?'<span class="prov">*</span>':'')+'</td>'+
+        '<td class="num">'+fmt(h.shares)+'</td>'+
+        '<td class="num">'+fmt(h.invested,0)+'</td>'+
+        '<td class="num">'+fmt(h.currentPrice,1)+'</td>'+
+        '<td class="num">'+fmt(h._value,0)+'</td>'+
+        '<td class="num '+cls(h._pnl)+'">'+(h._pnl>=0?'+':'')+fmt(h._pnl,0)+'</td>'+
+        '<td class="num '+cls(h._pnl)+'">'+pct(h._pnlPct)+'</td>'+
+        '<td>'+sparkline(h.priceSeries)+'</td>';
+      rows.appendChild(tr);
+    });
+    if(m.lastUpdated){ document.getElementById('updated').textContent=m.lastUpdated; }
+  }
+
   load();
+  loadPaper();
 })();
 </script>
 
@@ -201,6 +291,72 @@
     }
   ],
   "alerts": []
+}
+</script>
+
+<!-- ===================== EMBEDDED PAPER-TRADES ISLAND (fallback copy of data/paper-trades.json) ===================== -->
+<script id="paper-data" type="application/json">
+{
+  "meta": {
+    "startDate": "2026-06-13",
+    "startingCapital": 50000,
+    "horizonMonths": 6,
+    "reviewDate": "2026-12-13",
+    "allocation": "conviction-weighted (weight proportional to composite score)",
+    "lastUpdated": "2026-06-13",
+    "isProvisional": true,
+    "note": "Buy prices are provisional June-2026 snapshots; the first live Actions fetch re-executes each holding at the real market price and recomputes shares. P&L is REALIZED mark-to-market as time passes — NOT a forecast of the 6-month number. Not financial advice.",
+    "benchmark": { "name": "Nifty Smallcap 250", "nseIndex": "NIFTY SMALLCAP 250", "yahooSymbol": "^CNXSC", "startLevel": null, "currentLevel": null }
+  },
+  "holdings": [
+    {
+      "ticker": "SKYGOLD", "yahooSymbol": "SKYGOLD.NS", "name": "Sky Gold & Diamonds",
+      "sector": "Gems & Jewellery (B2B)", "conviction": "High", "composite": 78, "weightPct": 24.2,
+      "buyDate": "2026-06-13", "buyPrice": 513.05, "buyPriceProvisional": true,
+      "shares": 23, "invested": 11800.15, "currentPrice": 513.05,
+      "thesis": "B2B jewellery scaling with India's market formalisation; ROCE ~30%, no pledge, sales +77% YoY.",
+      "invalidation": "Net debt rising not falling, OCF persistently weak, anchor-customer loss, or pledge appearing.",
+      "priceSeries": [255,272,290,283,305,325,318,345,372,360,390,415,405,432,448,438,460,448,470,488,478,500,490,505,520,510,525,515,520,513.05]
+    },
+    {
+      "ticker": "SKIPPER", "yahooSymbol": "SKIPPER.NS", "name": "Skipper Ltd",
+      "sector": "Power T&D / Transmission Towers", "conviction": "Medium", "composite": 73, "weightPct": 22.7,
+      "buyDate": "2026-06-13", "buyPrice": 572.70, "buyPriceProvisional": true,
+      "shares": 19, "invested": 10881.30, "currentPrice": 572.70,
+      "thesis": "India's largest transmission-tower maker; grid-capex super-cycle, no pledge, PAT +63% Q4.",
+      "invalidation": "Order inflow stalling, OCF negative, D/E > 1.0, pledge, or surveillance entry.",
+      "priceSeries": [375,392,410,402,425,445,438,460,485,478,500,520,512,535,525,510,525,540,532,548,540,555,548,560,552,565,558,568,575,572.70]
+    },
+    {
+      "ticker": "ELECON", "yahooSymbol": "ELECON.NS", "name": "Elecon Engineering",
+      "sector": "Capital Goods / Industrial Gears", "conviction": "Medium", "composite": 66, "weightPct": 20.5,
+      "buyDate": "2026-06-13", "buyPrice": 510.00, "buyPriceProvisional": true,
+      "shares": 20, "invested": 10200.00, "currentPrice": 510.00,
+      "thesis": "Asia's top industrial-gear maker; debt-free, ROCE ~25%, multi-sector capex tailwind.",
+      "invalidation": "Order-inflow decline 2 quarters, OPM -300bps, ROCE < 18%, pledge, or close below 200-DMA.",
+      "priceSeries": [420,438,455,447,470,488,479,500,520,512,535,555,548,570,560,548,560,540,528,545,532,520,505,515,500,508,495,505,512,510]
+    },
+    {
+      "ticker": "CYIENTDLM", "yahooSymbol": "CYIENTDLM.NS", "name": "Cyient DLM",
+      "sector": "Electronics Manufacturing (EMS)", "conviction": "Watch", "composite": 54, "weightPct": 16.8,
+      "buyDate": "2026-06-13", "buyPrice": 452.00, "buyPriceProvisional": true,
+      "shares": 18, "invested": 8136.00, "currentPrice": 452.00,
+      "thesis": "EMS growing ~30% CAGR; record order book (B2B 1.46), ROCE ~10% targeted to ~25% — high risk/upside.",
+      "invalidation": "ROCE not improving over 4-6 quarters, book-to-bill < 1.0, WC ballooning, or a dilutive raise.",
+      "priceSeries": [300,318,335,328,350,372,360,385,372,360,348,362,378,365,352,368,380,372,360,375,388,402,392,410,425,415,430,442,448,452]
+    },
+    {
+      "ticker": "TIMETECHNO", "yahooSymbol": "TIMETECHNO.NS", "name": "Time Technoplast",
+      "sector": "Industrial Materials / Packaging", "conviction": "Watch", "composite": 51, "weightPct": 15.8,
+      "buyDate": "2026-06-13", "buyPrice": 167.00, "buyPriceProvisional": true,
+      "shares": 47, "invested": 7849.00, "currentPrice": 167.00,
+      "thesis": "World #2 composite cylinders (CNG/H2/LPG) + #1 plastic drums; cheap (~22x), debt trending down.",
+      "invalidation": "ROCE stalling < 14%, value-added mix not improving, debt rising, or WC deteriorating.",
+      "priceSeries": [205,210,202,196,188,192,184,178,182,175,180,172,168,174,170,165,171,167,163,169,166,162,168,170,166,169,165,168,166,167]
+    }
+  ],
+  "cash": 1133.55,
+  "totals": { "invested": 48866.45 }
 }
 </script>
 </body>
