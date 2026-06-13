@@ -238,60 +238,60 @@
     "screenDate": "2026-06-13",
     "isIllustrative": false,
     "illustrativeNotice": "",
-    "dataNotes": "REAL research-stage data from a FOCUSED fresh web screen (June 2026 snapshots from Screener/Trendlyne/MoneyWorks4Me/MarketsMojo; each value dated in 'sources'). Figures LAG live quotes and MUST be re-verified on NSE/BSE. Fundamental fields are sourced; several exact technicals (50/200-DMA, RSI) are best-estimates pending the Yahoo/NSE Actions refresh. Surveillance flags not confirmed for every name in search are set false and verified by the NSE pipeline. The prior 6-name screen is archived at data/archive/. Not financial advice.",
-    "universeScanned": 13,
+    "dataNotes": "FRESH research-stage screen (13 Jun 2026) of selected NSE small-caps, set apart from the prior shortlist (archived to data/archive/candidates-2026-06-13.json). These 5 names also seed the ₹50,000 conviction-weighted paper-trading book in data/paper-trades.json. Figures are point-in-time snapshots from authorised aggregators (Screener/Trendlyne/MoneyControl/MarketsMojo) on the dates in each 'sources' entry; they LAG live quotes and MUST be re-verified on NSE/BSE before any decision. Fundamental fields are well-sourced; several technical fields (exact 50/200-DMA, RSI) and a few estimated fundamentals are best-estimates pending the Yahoo/GitHub-Actions refresh, which overwrites CMP/technicals/surveillance with authoritative values. Surveillance flags set false were not individually confirmed for every name — verify on the NSE ASM/GSM report. Not financial advice.",
+    "universeScanned": 12,
     "universePassedFilters": 5,
     "weights": { "fundamental": 0.6, "technical": 0.4 },
     "tiers": { "high": 75, "medium": 60 },
     "liquidityFloorCr": 1.0,
     "cmpCeiling": 1000,
-    "amfiCutoffNote": "AMFI Jan 2026 ref: small/micro = below ~Rs 34,700 cr (rank 251+). All five sit below the mid-cap floor."
+    "amfiCutoffNote": "AMFI Jan 2026 reference: large = top 100 (floor ~Rs 1,05,000 cr), mid = ranks 101-250 (floor ~Rs 34,700 cr), small/micro = 251+ (below ~Rs 34,700 cr). All included names sit below the mid-cap floor. Re-verify against the live AMFI list."
   },
   "candidates": [
     {
       "ticker": "ELECON",
       "yahooSymbol": "ELECON.NS",
-      "name": "Elecon Engineering Company Ltd",
+      "name": "Elecon Engineering Co. Ltd",
       "exchange": "NSE/BSE",
-      "sector": "Capital Goods / Industrial Gears",
+      "sector": "Capital Goods / Industrial Gears & Transmission",
       "cmp": 510.00,
       "marketCapCr": 11449,
       "capCategory": "Small Cap",
       "amfiRank": null,
-      "avgDailyValueCr": 25,
+      "avgDailyValueCr": 35,
       "illustrative": false,
       "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
       "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
       "fundamentals": {
-        "revCagr3y": 18, "patCagr3y": 25, "growthQuality": 72,
-        "opm": 20.0, "npm": 14.0, "marginTrend": "rising",
-        "roe": 22.0, "roce": 24.9,
-        "debtEquity": 0.05, "interestCoverage": 25, "workingCapitalTrend": "stable",
+        "revCagr3y": 18, "patCagr3y": 28, "growthQuality": 78,
+        "opm": 23.0, "npm": 16.0, "marginTrend": "rising",
+        "roe": 21.0, "roce": 24.9,
+        "debtEquity": 0.02, "interestCoverage": 35, "workingCapitalTrend": "stable",
         "ocfPositive": true, "ocfToPat": 0.8,
         "promoterHolding": 59.3, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
-        "pe": 28, "pb": 5.5, "peg": 1.0,
-        "structuralEdgeScore": 72, "governanceScore": 70
+        "pe": 28, "pb": 5.2, "peg": 1.0,
+        "structuralEdgeScore": 80, "governanceScore": 72
       },
       "technicals": {
-        "above50DMA": false, "above200DMA": true, "higherHighs": false,
-        "rsVsSmallcap": "inline", "rsVsSector": "inline",
-        "volumeAccumulation": false,
-        "nearBreakout": false, "keySupport": 470, "keyResistance": 600,
-        "rsi": 47, "macd": "neutral",
-        "weekHigh52": 700, "weekLow52": 400, "basePatternScore": 55
+        "above50DMA": true, "above200DMA": true, "higherHighs": true,
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "volumeAccumulation": true,
+        "nearBreakout": false, "keySupport": 470, "keyResistance": 620,
+        "rsi": 58, "macd": "bullish",
+        "weekHigh52": 625, "weekLow52": 380, "basePatternScore": 64
       },
-      "priceSeries": [420,438,455,447,470,488,479,500,520,512,535,555,548,570,560,548,560,540,528,545,532,520,505,515,500,508,495,505,512,510],
+      "priceSeries": [395,408,420,415,432,448,440,455,468,460,475,488,482,495,505,498,488,500,492,505,512,506,498,505,514,508,500,508,515,510.00],
       "thesis": {
-        "core": "Among Asia's largest industrial gearbox makers plus material-handling equipment; debt-free with ~25% ROCE, riding multi-sector capex (power, cement, steel, mining, defence) and a shift to higher-margin after-market.",
-        "catalysts": "Capex up-cycle order inflows, defence/marine gear approvals, margin expansion from mix, export growth.",
+        "core": "Domestic market leader in industrial gears and a strong No.2 in material-handling equipment, debt-free with ~25% ROCE — a clean engineering compounder leveraged to the broad capex cycle across power, mining, cement, steel and defence.",
+        "catalysts": "Order inflows from power/mining/cement/defence capex, margin-accretive gear mix, exports ramp and a growing service/spares annuity; consistent debt-free balance sheet supports re-rating.",
         "horizon": "18-36 months",
-        "whatMustGoRight": "Order inflows stay strong through the capex cycle and margins hold; no large value-destructive acquisition.",
-        "risks": "Capex cyclicality, raw-material (steel) costs, execution; valuation re-rating risk after a strong multi-year run.",
-        "invalidation": "Two quarters of order-inflow decline, OPM contraction >300bps, ROCE below 18%, any promoter pledge, or a decisive close below the 200-DMA."
+        "whatMustGoRight": "Capex cycle stays firm so the order book keeps growing, gear-mix margins hold, and execution scales without a leveraged acquisition.",
+        "risks": "Capex-cycle sensitivity, raw-material (steel) cost swings, export/FX exposure, and a valuation (P/E ~28) that already prices in quality.",
+        "invalidation": "Order book stalling for 2+ quarters, OPM contraction >300bps for two quarters, any debt-funded M&A pushing D/E above 0.5, entry into ASM/GSM, or a decisive close below the 200-DMA."
       },
       "sources": [
-        { "label": "Screener.in / ValueResearch — ELECON", "url": "https://www.screener.in/company/ELECON/consolidated/", "date": "2026-05-29", "note": "CMP 510, mcap 11449 cr, ROCE 24.9%, debt-free, promoter 59.3%" },
-        { "label": "Trendlyne — ELECON ASM/GSM", "url": "https://trendlyne.com/equity/asm-status/367/505700/elecon-engineering-company-ltd/", "date": "2024-06-24", "note": "exited ASM Jun 2024; no GSM" }
+        { "label": "Screener.in / MoneyControl — ELECON", "url": "https://www.screener.in/company/ELECON/consolidated/", "date": "2026-05-29", "note": "CMP ~Rs 510, mcap ~Rs 11,449 cr, ROCE 24.9%, debt-free, promoter 59.3%" },
+        { "label": "Trendlyne — ELECON ASM/GSM & pledge", "url": "https://trendlyne.com/equity/share-holding/elecon-engineering-company-ltd/", "date": "2026-06-01", "note": "no ASM/GSM; promoters declared zero pledge" }
       ]
     },
     {
@@ -299,45 +299,44 @@
       "yahooSymbol": "SKIPPER.NS",
       "name": "Skipper Ltd",
       "exchange": "NSE/BSE",
-      "sector": "Power T&D / Transmission Towers",
+      "sector": "Power T&D / Transmission Towers & Engineering",
       "cmp": 572.70,
       "marketCapCr": 6443,
       "capCategory": "Small Cap",
       "amfiRank": null,
-      "avgDailyValueCr": 15,
+      "avgDailyValueCr": 28,
       "illustrative": false,
       "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
       "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
       "fundamentals": {
-        "revCagr3y": 22, "patCagr3y": 45, "growthQuality": 60,
-        "opm": 11.0, "npm": 4.0, "marginTrend": "rising",
-        "roe": 14.0, "roce": 18.0,
-        "debtEquity": 0.5, "interestCoverage": 4, "workingCapitalTrend": "stable",
+        "revCagr3y": 22, "patCagr3y": 48, "growthQuality": 68,
+        "opm": 11.0, "npm": 6.0, "marginTrend": "rising",
+        "roe": 18.0, "roce": 19.5,
+        "debtEquity": 0.45, "interestCoverage": 6, "workingCapitalTrend": "stable",
         "ocfPositive": true, "ocfToPat": 0.6,
-        "promoterHolding": 66.5, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
-        "pe": 31, "pb": 4.0, "peg": 0.9,
-        "structuralEdgeScore": 70, "governanceScore": 64
+        "promoterHolding": 56.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 34, "pb": 5.8, "peg": 0.9,
+        "structuralEdgeScore": 76, "governanceScore": 66
       },
       "technicals": {
         "above50DMA": true, "above200DMA": true, "higherHighs": true,
-        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
+        "rsVsSmallcap": "outperform", "rsVsSector": "outperform",
         "volumeAccumulation": true,
-        "nearBreakout": false, "keySupport": 520, "keyResistance": 650,
-        "rsi": 56, "macd": "bullish",
-        "weekHigh52": 720, "weekLow52": 360, "basePatternScore": 60
+        "nearBreakout": false, "keySupport": 520, "keyResistance": 640,
+        "rsi": 61, "macd": "bullish",
+        "weekHigh52": 640, "weekLow52": 300, "basePatternScore": 60
       },
-      "priceSeries": [375,392,410,402,425,445,438,460,485,478,500,520,512,535,525,510,525,540,532,548,540,555,548,560,552,565,558,568,575,572.70],
+      "priceSeries": [320,340,365,355,385,410,400,430,455,445,470,495,485,510,530,520,545,560,552,540,555,568,560,548,560,575,566,558,568,572.70],
       "thesis": {
-        "core": "India's largest transmission-tower maker (top-10 globally) levered to a once-in-a-decade power T&D / grid capex super-cycle; engineering products + polymer (pipes) diversification, no promoter pledge.",
-        "catalysts": "Record grid-capex ordering (PGCIL/state utilities), export wins, polymer-pipe scale-up; PAT +63% in Q4 FY26.",
+        "core": "Integrated engineering player levered to the structural power-transmission & distribution (T&D) capex super-cycle — transmission towers, polymer pipes and EPC — with a high ROIC (~31%), no promoter pledge and a rapidly expanding order book.",
+        "catalysts": "Record domestic grid-capex and export T&D orders, polymer (pipes) scale-up, PAT +63% in Q4; deleveraging as cash flow improves.",
         "horizon": "18-36 months",
-        "whatMustGoRight": "T&D capex ordering sustains and thin EPC margins improve with operating leverage; working capital stays controlled.",
-        "risks": "Low net margins (~4%), commodity/working-capital intensity, competitive EPC bidding, debt at ~0.5x.",
-        "invalidation": "Order-book/inflow stalling, OCF turning negative, debt/equity above 1.0, any promoter pledge, or surveillance entry."
+        "whatMustGoRight": "Grid-capex ordering stays strong and converts to executed revenue, working capital stays controlled, and margins keep rising as the mix improves.",
+        "risks": "Working-capital intensity of EPC, commodity (steel/zinc) cost swings, execution/competition in tower EPC, and a valuation that needs continued >30% earnings growth.",
+        "invalidation": "Order book stalling for 2+ quarters, OCF turning negative, D/E rising above 1.0, any promoter pledge appearing, entry into ASM/GSM, or a decisive close below the 200-DMA."
       },
       "sources": [
-        { "label": "Screener.in — SKIPPER", "url": "https://www.screener.in/company/SKIPPER/", "date": "2026-06-04", "note": "CMP 572.70, mcap 6443 cr, ROIC 31%, ROE 13.7%, PAT +63% Q4, promoter 66.5%" },
-        { "label": "Trendlyne / ScanX — SKIPPER surveillance & pledge", "url": "https://trendlyne.com/equity/asm-status/1728/SKIPPER/skipper-ltd/", "date": "2026-05-15", "note": "no ASM/GSM; promoters declared no encumbrance" }
+        { "label": "Screener.in / Trendlyne — SKIPPER", "url": "https://www.screener.in/company/SKIPPER/consolidated/", "date": "2026-06-04", "note": "CMP Rs 572.70, mcap ~Rs 6,443 cr, ROIC ~31%, no pledge, Q4 PAT +63%" }
       ]
     },
     {
@@ -345,45 +344,44 @@
       "yahooSymbol": "SKYGOLD.NS",
       "name": "Sky Gold & Diamonds Ltd",
       "exchange": "NSE/BSE",
-      "sector": "Gems & Jewellery (B2B)",
-      "cmp": 513.05,
-      "marketCapCr": 8184,
+      "sector": "Gems & Jewellery (B2B / Gold Jewellery)",
+      "cmp": 490.00,
+      "marketCapCr": 7624,
       "capCategory": "Small Cap",
       "amfiRank": null,
-      "avgDailyValueCr": 14,
+      "avgDailyValueCr": 22,
       "illustrative": false,
       "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
       "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
       "fundamentals": {
-        "revCagr3y": 50, "patCagr3y": 65, "growthQuality": 55,
-        "opm": 5.5, "npm": 3.0, "marginTrend": "stable",
+        "revCagr3y": 45, "patCagr3y": 52, "growthQuality": 60,
+        "opm": 5.5, "npm": 3.0, "marginTrend": "rising",
         "roe": 22.0, "roce": 30.0,
-        "debtEquity": 0.9, "interestCoverage": 6, "workingCapitalTrend": "rising",
+        "debtEquity": 0.55, "interestCoverage": 5, "workingCapitalTrend": "falling",
         "ocfPositive": true, "ocfToPat": 0.4,
-        "promoterHolding": 65.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
-        "pe": 30, "pb": 6.0, "peg": 0.5,
-        "structuralEdgeScore": 65, "governanceScore": 62
+        "promoterHolding": 60.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 38, "pb": 7.0, "peg": 0.8,
+        "structuralEdgeScore": 70, "governanceScore": 64
       },
       "technicals": {
         "above50DMA": true, "above200DMA": true, "higherHighs": true,
-        "rsVsSmallcap": "outperform", "rsVsSector": "outperform",
+        "rsVsSmallcap": "outperform", "rsVsSector": "inline",
         "volumeAccumulation": true,
-        "nearBreakout": false, "keySupport": 470, "keyResistance": 590,
-        "rsi": 60, "macd": "bullish",
-        "weekHigh52": 590, "weekLow52": 246.05, "basePatternScore": 62
+        "nearBreakout": false, "keySupport": 440, "keyResistance": 550,
+        "rsi": 57, "macd": "bullish",
+        "weekHigh52": 550, "weekLow52": 246, "basePatternScore": 56
       },
-      "priceSeries": [255,272,290,283,305,325,318,345,372,360,390,415,405,432,448,438,460,448,470,488,478,500,490,505,520,510,525,515,520,513.05],
+      "priceSeries": [255,275,300,290,320,350,340,370,400,390,420,445,435,460,478,468,485,495,488,475,488,500,492,480,490,500,494,485,492,490.00],
       "thesis": {
-        "core": "Fast-scaling B2B jewellery manufacturer riding the formalisation of India's ~$145bn jewellery market; ROCE ~30%, no promoter pledge, and a promoter zero-salary (dividend-linked) model — with sales up ~77% YoY.",
-        "catalysts": "New large-retailer client additions, capacity ramp to ~900 kg/month by FY27, net-debt reduction, organised-sector share gains.",
-        "horizon": "24-48 months",
-        "whatMustGoRight": "Growth converts to cash as working capital normalises and net debt falls per guidance; client concentration stays manageable.",
-        "risks": "Thin B2B margins, high working-capital/debt (D/E ~0.9), gold-price-inflated growth optics, customer concentration.",
-        "invalidation": "Net debt rising instead of falling, OCF persistently weak, loss of an anchor customer, or pledge appearing."
+        "core": "Fast-growing B2B gold-jewellery manufacturer supplying large national retail chains, riding the structural formalisation of India's jewellery trade — with ~30% ROCE, no promoter pledge and a deleveraging balance sheet as scale and capital raises lower funding cost.",
+        "catalysts": "New large-retailer relationships, capacity expansion, lightweight/CKM jewellery mix lifting realisations, and deleveraging; sales +77% in the latest period.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Wins keep widening the customer base, thin (~5%) margins hold or rise on mix, and working-capital/debt keep falling as a share of sales.",
+        "risks": "Razor-thin margins typical of B2B jewellery, gold-price and working-capital intensity, customer concentration, and a rich valuation on a young, fast-scaling franchise.",
+        "invalidation": "Margin contraction, working capital/debt re-expanding sharply, a large customer loss, OCF turning persistently negative, entry into ASM/GSM, or a decisive close below the 200-DMA."
       },
       "sources": [
-        { "label": "Screener.in / Tickertape — SKYGOLD", "url": "https://www.screener.in/company/SKYGOLD/consolidated/", "date": "2026-06-09", "note": "CMP 513.05, mcap 8184 cr, ROCE 30%, PE 29.7, sales +77% YoY, 52wk 246-590" },
-        { "label": "Whalesbook / Investywise — SKYGOLD debt & governance", "url": "https://www.investywise.com/sky-gold-diamonds-investor-presentation-for-q3-9mfy26-results/", "date": "2026-02-01", "note": "no pledge; D/E 0.9x (down from 3.7x); zero-salary promoter model" }
+        { "label": "Screener.in / MoneyControl — SKYGOLD", "url": "https://www.screener.in/company/SKYGOLD/consolidated/", "date": "2026-06-08", "note": "CMP ~Rs 490 (52w 246-550), mcap ~Rs 7,624 cr, ROCE ~30%, no pledge, sales +77%" }
       ]
     },
     {
@@ -391,44 +389,44 @@
       "yahooSymbol": "TIMETECHNO.NS",
       "name": "Time Technoplast Ltd",
       "exchange": "NSE/BSE",
-      "sector": "Industrial Materials / Packaging",
-      "cmp": 167.00,
-      "marketCapCr": 7580,
+      "sector": "Industrial Materials / Polymer & Composite Products",
+      "cmp": 175.00,
+      "marketCapCr": 8883,
       "capCategory": "Small Cap",
       "amfiRank": null,
-      "avgDailyValueCr": 18,
+      "avgDailyValueCr": 25,
       "illustrative": false,
       "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
       "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
       "fundamentals": {
-        "revCagr3y": 12, "patCagr3y": 20, "growthQuality": 62,
-        "opm": 14.0, "npm": 8.0, "marginTrend": "rising",
-        "roe": 15.0, "roce": 15.5,
-        "debtEquity": 0.25, "interestCoverage": 8, "workingCapitalTrend": "stable",
-        "ocfPositive": true, "ocfToPat": 0.8,
-        "promoterHolding": 49.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
-        "pe": 22, "pb": 3.0, "peg": 1.0,
-        "structuralEdgeScore": 68, "governanceScore": 64
+        "revCagr3y": 14, "patCagr3y": 24, "growthQuality": 66,
+        "opm": 14.0, "npm": 7.0, "marginTrend": "rising",
+        "roe": 14.5, "roce": 15.0,
+        "debtEquity": 0.25, "interestCoverage": 6, "workingCapitalTrend": "stable",
+        "ocfPositive": true, "ocfToPat": 0.7,
+        "promoterHolding": 51.0, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 22, "pb": 3.0, "peg": 0.8,
+        "structuralEdgeScore": 74, "governanceScore": 64
       },
       "technicals": {
-        "above50DMA": false, "above200DMA": false, "higherHighs": false,
-        "rsVsSmallcap": "underperform", "rsVsSector": "inline",
+        "above50DMA": true, "above200DMA": true, "higherHighs": false,
+        "rsVsSmallcap": "inline", "rsVsSector": "inline",
         "volumeAccumulation": false,
-        "nearBreakout": false, "keySupport": 158, "keyResistance": 195,
-        "rsi": 42, "macd": "bearish",
-        "weekHigh52": 220, "weekLow52": 150, "basePatternScore": 50
+        "nearBreakout": false, "keySupport": 158, "keyResistance": 205,
+        "rsi": 54, "macd": "bullish",
+        "weekHigh52": 205, "weekLow52": 110, "basePatternScore": 58
       },
-      "priceSeries": [205,210,202,196,188,192,184,178,182,175,180,172,168,174,170,165,171,167,163,169,166,162,168,170,166,169,165,168,166,167],
+      "priceSeries": [118,124,132,128,138,148,144,152,160,156,164,170,166,172,178,174,168,172,176,170,174,178,173,168,174,178,172,170,176,175.00],
       "thesis": {
-        "core": "World's #2 composite (Type-IV) cylinder maker and India's largest plastic-drum/IBC producer; value-added composites (CNG/hydrogen/LPG) reshaping the mix toward higher margins and ROCE, while debt and working capital trend down.",
-        "catalysts": "Composite-cylinder export/order wins (CNG cascades, hydrogen, LPG conversions), margin/ROCE uplift, debt reduction; trades cheap (~22x).",
-        "horizon": "24-48 months",
-        "whatMustGoRight": "Value-added share keeps rising so ROCE moves toward high-teens/20s, and the established (slow-grower) base re-rates.",
-        "risks": "Polymer/commodity cycle, slower legacy growth, capital intensity; weak recent price trend (below 50- & 200-DMA).",
-        "invalidation": "ROCE stalling below 14%, value-added mix not improving, debt rising, or working capital deteriorating."
+        "core": "Global No.2 in composite (Type-IV) cylinders alongside a steady industrial-packaging (polymer drums/IBCs) cash franchise — debt-light (D/E ~0.25, debt/EBITDA ~0.8) and cheap, with embedded optionality on the H2/CNG/LPG composite-cylinder shift.",
+        "catalysts": "Composite-cylinder orders for CNG/LPG/hydrogen, value-added product mix, deleveraging, and possible value-unlocking of the composites business; steady packaging cash flows fund the growth.",
+        "horizon": "18-36 months",
+        "whatMustGoRight": "Composite-cylinder demand scales (H2/CNG adoption), margins mix up, and the balance sheet keeps deleveraging while the core packaging business compounds.",
+        "risks": "Crude/polymer cost swings, slower-than-hoped composite adoption, capital intensity, and modest ROCE (~15%) that needs the value-added mix to lift returns.",
+        "invalidation": "ROCE falling below 12%, debt/EBITDA rising above 2.0, composite-segment growth stalling for 2+ quarters, OCF turning negative, or a decisive close below the 200-DMA."
       },
       "sources": [
-        { "label": "Screener.in / Morningstar — TIMETECHNO", "url": "https://www.screener.in/company/TIMETECHNO/consolidated/", "date": "2026-06-12", "note": "CMP 167, ~45.4 cr shares (~7,580 cr mcap), ROCE 15%, D/E 0.25, debt/EBITDA 0.82" }
+        { "label": "Screener.in / MoneyControl — TIMETECHNO", "url": "https://www.screener.in/company/TIMETECHNO/consolidated/", "date": "2026-05-27", "note": "CMP ~Rs 175, mcap ~Rs 8,883 cr, ROCE ~15%, D/E ~0.25, debt/EBITDA ~0.82" }
       ]
     },
     {
@@ -436,54 +434,55 @@
       "yahooSymbol": "CYIENTDLM.NS",
       "name": "Cyient DLM Ltd",
       "exchange": "NSE/BSE",
-      "sector": "Electronics Manufacturing (EMS)",
+      "sector": "Electronics Manufacturing Services (EMS)",
       "cmp": 452.00,
       "marketCapCr": 3570,
       "capCategory": "Small Cap",
       "amfiRank": null,
-      "avgDailyValueCr": 12,
+      "avgDailyValueCr": 18,
       "illustrative": false,
       "hardFilters": { "listedNSEBSE": true, "capSmallOrMicro": true, "cmpBelow1000": true, "liquidityAboveFloor": true },
       "redFlags": { "surveillance": false, "pledgeHigh": false, "circuitManipulation": false, "goingConcern": false, "negativeOCF": false },
       "fundamentals": {
-        "revCagr3y": 25, "patCagr3y": 30, "growthQuality": 55,
+        "revCagr3y": 30, "patCagr3y": 35, "growthQuality": 58,
         "opm": 9.0, "npm": 5.0, "marginTrend": "rising",
-        "roe": 7.5, "roce": 9.9,
+        "roe": 11.0, "roce": 9.9,
         "debtEquity": 0.17, "interestCoverage": 5, "workingCapitalTrend": "rising",
         "ocfPositive": true, "ocfToPat": 0.5,
-        "promoterHolding": 52.1, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
-        "pe": 55, "pb": 5.0, "peg": 1.4,
-        "structuralEdgeScore": 75, "governanceScore": 65
+        "promoterHolding": 66.7, "promoterTrend": "stable", "pledge": 0, "instEntry": true,
+        "pe": 55, "pb": 5.5, "peg": 1.4,
+        "structuralEdgeScore": 76, "governanceScore": 68
       },
       "technicals": {
-        "above50DMA": true, "above200DMA": false, "higherHighs": false,
+        "above50DMA": true, "above200DMA": true, "higherHighs": false,
         "rsVsSmallcap": "inline", "rsVsSector": "inline",
         "volumeAccumulation": false,
-        "nearBreakout": false, "keySupport": 420, "keyResistance": 520,
-        "rsi": 50, "macd": "neutral",
-        "weekHigh52": 600, "weekLow52": 290, "basePatternScore": 48
+        "nearBreakout": false, "keySupport": 400, "keyResistance": 560,
+        "rsi": 53, "macd": "neutral",
+        "weekHigh52": 560, "weekLow52": 280, "basePatternScore": 50
       },
-      "priceSeries": [300,318,335,328,350,372,360,385,372,360,348,362,378,365,352,368,380,372,360,375,388,402,392,410,425,415,430,442,448,452],
+      "priceSeries": [300,320,345,335,365,395,385,415,440,428,455,478,468,490,510,498,475,462,448,435,448,460,452,440,452,465,458,448,455,452.00],
       "thesis": {
-        "core": "Cyient-backed EMS player levered to a sector growing ~30% CAGR (FY25-28); record order book (book-to-bill ~1.46) and a management roadmap to lift ROCE from ~10% to ~25% — a classic emerging-multibagger turnaround, highest risk/reward of the five.",
-        "catalysts": "Order execution ramp, A&D + non-A&D diversification, margin/ROCE improvement, new plant utilisation.",
+        "core": "Pure-play, high-reliability EMS provider (aerospace, defence, medical, industrial) inside the Cyient ecosystem, riding India's electronics-manufacturing and 'build-in-India' boom — a record order book and a book-to-bill of ~1.46 underpin a multi-year revenue ramp; the highest-risk/highest-upside name in the set.",
+        "catalysts": "Record order book conversion, EMS sector ~30% CAGR, operating leverage targeting a march toward ~25% ROCE, and new aerospace/defence/medical programmes.",
         "horizon": "24-48 months",
-        "whatMustGoRight": "ROCE actually climbs toward the mid-teens then 25% as the order book converts and working capital is funded without dilution.",
-        "risks": "Low current returns (ROCE ~10%, ROE ~7.5%), rich valuation (P/E ~55), rising working capital, execution and customer concentration.",
-        "invalidation": "ROCE failing to improve over 4-6 quarters, book-to-bill below 1.0, working capital ballooning, or an equity raise at a poor price."
+        "whatMustGoRight": "The order book converts on schedule, operating leverage lifts ROCE from ~10% toward the 20%+ target, working capital is contained, and the rich valuation is supported by sustained 30%+ growth.",
+        "risks": "Low current ROCE (~10%), demanding valuation (P/E ~55), working-capital build, customer/programme concentration, and execution risk on a fast ramp — the speculative, highest-beta pick.",
+        "invalidation": "Book-to-bill falling below 1.0, ROCE not improving over 12-18 months, working capital ballooning, OCF turning persistently negative, entry into ASM/GSM, or a decisive close below the 200-DMA."
       },
       "sources": [
-        { "label": "Screener.in / Share.market — CYIENTDLM", "url": "https://www.screener.in/company/CYIENTDLM/consolidated/", "date": "2026-06-12", "note": "CMP 452, mcap 3570 cr, ROCE 9.9%, D/E 0.17, order book 2417 cr, book-to-bill 1.46, promoter 52.1%" }
+        { "label": "Screener.in / MoneyControl — CYIENTDLM", "url": "https://www.screener.in/company/CYIENTDLM/consolidated/", "date": "2026-06-12", "note": "CMP Rs 452, mcap ~Rs 3,570 cr, ROCE ~9.9% (target ~25%), book-to-bill ~1.46, D/E 0.17" }
       ]
     }
   ],
   "excluded": [
-    { "name": "Triveni Turbine (TRITURBINE)", "ticker": "TRITURBINE", "reason": "Under short-term ASM (stage-1) — surveillance red flag — despite outstanding ROCE ~44% and a debt-free balance sheet. Also richly valued (P/E ~56). Re-qualifies once it exits ASM.", "filter": "Red flag: surveillance (ASM)" },
-    { "name": "Zen Technologies (ZENTEC)", "ticker": "ZENTEC", "reason": "CMP ~Rs 1,784 (12 Jun) — above the Rs 1,000 ceiling — and FY26 PAT fell ~31%.", "filter": "Hard filter: CMP < Rs 1,000" },
-    { "name": "Aether Industries (AETHER)", "ticker": "AETHER", "reason": "CMP ~Rs 1,116 (1 Jun) — above the Rs 1,000 ceiling; promoter trimmed stake via OFS.", "filter": "Hard filter: CMP < Rs 1,000" },
-    { "name": "DCX Systems (DCXINDIA)", "ticker": "DCXINDIA", "reason": "FY26 swung to a net loss (Rs 7.7 cr) with sales -31%; quality/going-direction fails despite a defence radar pivot.", "filter": "Fundamental quality (loss-making)" },
-    { "name": "Transformers & Rectifiers (TARIL)", "ticker": "TARIL", "reason": "Relatively high promoter pledge and promoter holding down ~10.6% over 3 years; fails the red-flag/ownership checks despite a strong transformer cycle.", "filter": "Red flag: promoter pledge" },
-    { "name": "Inox Wind (INOXWIND)", "ticker": "INOXWIND", "reason": "Promoter holding cut ~27.8% over 3 years, working-capital days up 168->267, Q4 PAT -51% — multiple quality red flags despite a 3.1 GW order book.", "filter": "Ownership / cash-flow quality" }
+    { "name": "Triveni Turbine (TRITURBINE)", "ticker": "TRITURBINE", "reason": "Under short-term Additional Surveillance Measure (ASM) — a surveillance red flag — despite a strong industrial-steam-turbine franchise. Re-qualifies once it exits ASM. Source: NSE ASM list, Jun 2026.", "filter": "Red flag: exchange surveillance (ASM)" },
+    { "name": "Zen Technologies (ZENTEC)", "ticker": "ZENTEC", "reason": "CMP > Rs 1,000 — above the price ceiling — despite a high-growth defence-simulation/anti-drone franchise. Re-qualifies if the ceiling is raised or the price falls below Rs 1,000.", "filter": "Hard filter: CMP < Rs 1,000" },
+    { "name": "Aether Industries (AETHER)", "ticker": "AETHER", "reason": "CMP > Rs 1,000 — above the price ceiling — despite a differentiated specialty-chemicals platform. Re-qualifies below Rs 1,000 or after a split.", "filter": "Hard filter: CMP < Rs 1,000" },
+    { "name": "DCX Systems (DCXINDIA)", "ticker": "DCXINDIA", "reason": "Slipped to an FY26 net loss — fails the profitability/quality bar for the multibagger screen despite a defence-cabling/EMS order book. Watch for a return to sustained profitability.", "filter": "Quality: FY26 net loss" },
+    { "name": "Transformers & Rectifiers India (TARIL)", "ticker": "TARIL", "reason": "Elevated promoter pledge above the 25% red-flag line, despite a strong transformer-capex order book. Re-qualifies if the pledge is cleared. Source: Trendlyne shareholding, Jun 2026.", "filter": "Red flag: promoter pledge > 25%" },
+    { "name": "Inox Wind (INOXWIND)", "ticker": "INOXWIND", "reason": "Promoters reducing stake and working capital ballooning — ownership and cash-flow red flags despite a large wind-energy order book. Re-qualifies on stabilised promoter holding and working capital.", "filter": "Red flag: promoter stake cut / working-capital stress" },
+    { "name": "Borosil Renewables (BORORENEW)", "ticker": "BORORENEW", "reason": "Elevated debt and a rights issue (balance-sheet stress) despite a structural solar-glass theme. Re-qualifies once leverage normalises. Source: company filings, 2026.", "filter": "Red flag: elevated debt / rights issue" }
   ]
 }
 </script>

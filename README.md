@@ -37,16 +37,7 @@ Open the two dashboards directly in a browser — no build step, no server, no d
 |---|---|
 | [`index.html`](index.html) | Landing page linking both dashboards (the GitHub Pages entry point) |
 | [`screener.html`](screener.html) | **PHASE 1** — selection, scoring & thesis dashboard |
-| [`tracker.html`](tracker.html) | **PHASE 2** — daily monitoring + ₹50k paper portfolio |
-
-### Paper portfolio (₹50,000 conviction-weighted test)
-
-`tracker.html` includes a **paper-trading** experiment: ₹50,000 booked across 5 multibagger picks,
-weighted by composite score, to measure how the selection actually performs. It marks to market via
-the same pipeline, shows total/per-stock P&L, a 6-month review countdown (review date 2026-12-13),
-and a Nifty Smallcap benchmark. Data lives in `data/paper-trades.json`. **It reports *realized* P&L
-as time passes — it does not forecast a future number.** Buy prices seed as June-2026 snapshots and
-are re-executed at the real market price on the first live fetch.
+| [`tracker.html`](tracker.html) | **PHASE 2** — daily monitoring dashboard |
 
 Each dashboard is self-contained and works offline (`file://`). When served over `http(s)` it reads
 the editable JSON in `data/`; offline it falls back to an embedded copy of that data baked into the
@@ -73,7 +64,9 @@ python3 -m http.server 8000   # then open http://localhost:8000/
 │   └── scoring.js          # transparent scoring engine (canonical; also embedded in the HTML)
 ├── data/
 │   ├── candidates.json     # PHASE 1 candidate data  ← populate from authorised sources
-│   └── portfolio.json      # PHASE 2 tracked positions ← the stocks you accept
+│   ├── portfolio.json      # PHASE 2 tracked positions ← the stocks you accept
+│   ├── paper-trades.json   # ₹50k conviction-weighted paper book (drives the tracker's top panel)
+│   └── archive/            # superseded data snapshots (e.g. the prior shortlist)
 ├── tracking/
 │   └── TRACKING.md         # human-readable persistent tracking log
 └── docs/
@@ -104,6 +97,32 @@ console.log(c.ticker,e.fundamentalScore,e.technicalScore,e.composite,e.tier);});
 
 ---
 
+## ₹50,000 paper-trading test (conviction-weighted)
+
+The tracker opens with a **₹50,000 paper book** of 5 freshly-screened multibaggers
+(`data/paper-trades.json`). It's a measurement tool, not a forecast: it **books the trades now** at
+the screen-date price and **marks them to market** as months pass, reporting **realized P&L vs a
+Nifty Smallcap benchmark** with a live countdown to a **6-month review (13 Dec 2026)**.
+
+Capital is split by conviction, using the same scoring engine as the screener:
+
+```
+weight_i = composite_i / Σ composite        # higher composite → bigger slice
+shares_i = floor(50000 · weight_i / buyPrice_i)   # whole shares only
+cash     = 50000 − Σ invested_i             # residual stays as cash
+```
+
+The current 5 (composite in brackets): **ELECON** (79) · **SKYGOLD** (78) · **SKIPPER** (76) ·
+**TIMETECHNO** (65) · **CYIENTDLM** (62). The prior shortlist is archived under
+`data/archive/` — nothing is lost. P&L is **realized-not-predicted**: it only becomes meaningful as
+the GitHub Actions pipeline fills in real, dated prices. Full method:
+[`docs/METHODOLOGY.md §7`](docs/METHODOLOGY.md#7-paper-trading-test-50000-conviction-weighted).
+
+> Not financial advice. Whole-share, no-cost, no-slippage assumptions make the book an approximation
+> of a real account.
+
+---
+
 ## Live data via Yahoo Finance (optional auto-fill)
 
 `tools/fetch_yahoo.js` populates the data files from Yahoo's public JSON API (no dependencies,
@@ -113,6 +132,7 @@ Node 18+). Add a `yahooSymbol` to each record — NSE uses the `.NS` suffix, BSE
 ```bash
 node tools/fetch_yahoo.js --candidates   # refresh CMP, technicals, ratios in data/candidates.json
 node tools/fetch_yahoo.js --portfolio    # daily PHASE 2 update of data/portfolio.json
+node tools/fetch_yahoo.js --paper        # mark the ₹50k paper book to market + benchmark level
 node tools/embed_data.js                 # re-embed JSON into the HTML offline fallback
 ```
 
@@ -150,8 +170,8 @@ internet access, so Yahoo and NSE are reachable there even when your local envir
 down. It:
 
 1. runs on a weekday schedule (after NSE close) and on manual dispatch (Actions tab → *Run workflow*),
-2. refreshes `data/candidates.json` and `data/portfolio.json` (Yahoo technicals, then official NSE
-   prices), re-embeds them into the dashboards,
+2. refreshes `data/candidates.json`, `data/portfolio.json` and `data/paper-trades.json` (Yahoo
+   technicals/prices, then official NSE prices + benchmark level), re-embeds them into the dashboards,
 3. commits the changes back to the branch.
 
 With GitHub Pages enabled, your dashboards then update themselves daily with no machine of your own

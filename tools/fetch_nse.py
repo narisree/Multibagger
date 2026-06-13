@@ -390,70 +390,68 @@ def run_portfolio(nse):
     print(f"\nUpdated {n} position(s) from NSE -> data/portfolio.json")
 
 
-def fetch_index_level(nse, index_name):
+def benchmark_level(nse, name):
     """Best-effort current level of a named NSE index (e.g. 'NIFTY SMALLCAP 250')."""
-    if not index_name:
-        return None
     try:
-        idxs = nse.listIndices()
-    except Exception:  # noqa: BLE001
+        data = nse.listIndices()
+    except Exception as e:  # noqa: BLE001
+        print(f"  · index list unavailable ({e})")
         return None
-    rows = idxs.get("data") if isinstance(idxs, dict) else idxs
+    rows = data.get("data") if isinstance(data, dict) else data
     if not isinstance(rows, list):
         return None
+    target = (name or "").upper().replace(" ", "")
+    best = None
     for r in rows:
-        name = dig(r, "index") or dig(r, "indexName") or dig(r, "indexSymbol")
-        if name and index_name.upper() in str(name).upper():
-            return first_num(r, ("last",), ("lastPrice",), ("previousClose",))
-    return None
+        idx = str(dig(r, "index") or dig(r, "indexSymbol") or "").upper().replace(" ", "")
+        if not idx:
+            continue
+        if idx == target or (target and target in idx):
+            lvl = first_num(r, ("last",), ("lastPrice",), ("indexValue",))
+            if lvl is not None:
+                # exact match wins immediately; otherwise keep the first contains-match
+                if idx == target:
+                    return lvl
+                if best is None:
+                    best = lvl
+    return best
 
 
 def run_paper(nse):
-    """Refresh the ₹50k paper book's currentPrice + benchmark; execute provisional buys on first run."""
     f = ROOT / "data" / "paper-trades.json"
     data = json.loads(f.read_text())
-    meta = data.get("meta", {})
-    cap = meta.get("startingCapital", 50000)
-    provisional = meta.get("isProvisional", False)
     n = 0
     for h in data.get("holdings", []):
         sym = h.get("ticker")
         if not sym:
             continue
-        q = fetch_quote(nse, sym)
-        time.sleep(RATE_SLEEP)
-        if not q or q["price"] is None:
-            print(f"- {sym}: no quote, currentPrice unchanged")
+        print(f"\n{sym}")
+        rec = {"ticker": sym}
+        if not enrich_quote(nse, sym, rec):
             continue
-        h["currentPrice"] = q["price"]
-        if provisional and h.get("buyPriceProvisional"):
-            target = cap * (h.get("weightPct", 0) / 100.0)
-            h["buyPrice"] = q["price"]
-            h["shares"] = int(target // q["price"]) if q["price"] else h.get("shares", 0)
-            h["invested"] = round(h["shares"] * q["price"], 2)
-            h["buyPriceProvisional"] = False
-            h["buyDate"] = TODAY
-        since = ((q["price"] - h["buyPrice"]) / h["buyPrice"] * 100) if h.get("buyPrice") else None
-        print(f"✓ {sym}: CMP ₹{q['price']}" + (f" ({since:+.1f}% vs buy)" if since is not None else ""))
-        n += 1
-    invested = sum(h.get("invested", 0) for h in data.get("holdings", []))
-    data["cash"] = round(cap - invested, 2)
-    data.setdefault("totals", {})["invested"] = round(invested, 2)
-
-    bench = meta.get("benchmark", {})
-    lvl = fetch_index_level(nse, bench.get("nseIndex"))
-    if lvl is not None:
-        if not bench.get("startLevel"):
-            bench["startLevel"] = lvl
-        bench["currentLevel"] = lvl
-        meta["benchmark"] = bench
-        print(f"  · benchmark {bench.get('name')}: {lvl}")
-    if provisional and all(not h.get("buyPriceProvisional") for h in data.get("holdings", [])):
-        meta["isProvisional"] = False
-    meta["lastUpdated"] = TODAY
-    data["meta"] = meta
+        if rec.get("cmp") is not None:
+            h["currentPrice"] = rec["cmp"]
+            val = rec["cmp"] * (h.get("shares") or 0)
+            pl = val - (h.get("invested") or 0)
+            print(f"  · paper: value ₹{val:.0f} P&L {'+' if pl >= 0 else ''}{pl:.0f}")
+            n += 1
+        rec.pop("_dayChangePct", None)
+        time.sleep(RATE_SLEEP)
+    bm = data.get("benchmark") or {}
+    if bm.get("name"):
+        lvl = benchmark_level(nse, bm["name"])
+        if lvl is not None:
+            bm["currentLevel"] = rnd(lvl)
+            if bm.get("startProvisional"):
+                bm["startLevel"] = rnd(lvl)
+                bm["startProvisional"] = False
+                bm["startDate"] = TODAY
+            print(f"\nbenchmark {bm['name']}: level {bm['currentLevel']}")
+        else:
+            print(f"\nbenchmark {bm['name']}: level unavailable (keeping prior)")
+    data.setdefault("meta", {})["lastUpdated"] = TODAY
     f.write_text(json.dumps(data, indent=2) + "\n")
-    print(f"\nUpdated {n} paper holding(s) from NSE -> data/paper-trades.json; cash ₹{data['cash']}")
+    print(f"\nUpdated {n} holding(s) from NSE -> data/paper-trades.json")
 
 
 def main():

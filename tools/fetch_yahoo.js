@@ -5,6 +5,7 @@
  *
  *   node tools/fetch_yahoo.js --candidates   # refresh data/candidates.json
  *   node tools/fetch_yahoo.js --portfolio    # refresh data/portfolio.json (daily PHASE 2)
+ *   node tools/fetch_yahoo.js --paper        # mark the ₹50k paper book to market + benchmark
  *
  * Each record must carry a Yahoo symbol, e.g.  "yahooSymbol": "NESCO.NS"
  *   - NSE tickers use the .NS suffix, BSE uses .BO
@@ -176,45 +177,37 @@ async function updatePortfolio() {
 async function updatePaper() {
   const file = path.join(ROOT, 'data', 'paper-trades.json');
   const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const meta = data.meta || {};
-  const cap = meta.startingCapital || 50000;
-  const provisional = !!meta.isProvisional;
   let n = 0;
   for (const h of data.holdings || []) {
     if (!h.yahooSymbol) { console.log(`- ${h.ticker}: no yahooSymbol, skipped`); continue; }
-    const ch = await fetchChart(h.yahooSymbol);
-    h.currentPrice = ch.cmp;
-    if (ch.priceSeries) h.priceSeries = ch.priceSeries;
-    if (provisional && h.buyPriceProvisional) {
-      const target = cap * (num(h.weightPct, 0) / 100);
-      h.buyPrice = ch.cmp;
-      h.shares = Math.floor(target / ch.cmp);
-      h.invested = round(h.shares * ch.cmp, 2);
-      h.buyPriceProvisional = false;
-      h.buyDate = today;
-    }
-    const since = h.buyPrice ? ((ch.cmp - h.buyPrice) / h.buyPrice * 100) : null;
-    console.log(`✓ ${h.ticker}: CMP ₹${ch.cmp}${since != null ? ` (${since >= 0 ? '+' : ''}${since.toFixed(1)}% vs buy)` : ''}`);
-    n++;
-  }
-  const invested = (data.holdings || []).reduce((s, h) => s + (h.invested || 0), 0);
-  data.cash = round(cap - invested, 2);
-  data.totals = data.totals || {}; data.totals.invested = round(invested, 2);
-  // benchmark (best-effort: Nifty Smallcap proxy)
-  const bench = meta.benchmark || {};
-  if (bench.yahooSymbol) {
     try {
-      const bc = await fetchChart(bench.yahooSymbol);
-      if (!bench.startLevel) bench.startLevel = bc.cmp;
-      bench.currentLevel = bc.cmp;
-      meta.benchmark = bench;
-    } catch (e) { /* leave benchmark for NSE */ }
+      const ch = await fetchChart(h.yahooSymbol);
+      h.currentPrice = ch.cmp;
+      if (Array.isArray(ch.priceSeries) && ch.priceSeries.length > 1) h.priceSeries = ch.priceSeries;
+      const val = ch.cmp * (h.shares || 0);
+      const pl = val - (h.invested || 0);
+      console.log(`✓ ${h.ticker}: CMP ₹${ch.cmp} · value ₹${val.toFixed(0)} · P&L ${pl >= 0 ? '+' : ''}${pl.toFixed(0)}`);
+      n++;
+    } catch (e) {
+      console.log(`- ${h.ticker}: price fetch failed (${e && e.message || e}); keeping prior currentPrice`);
+    }
   }
-  if (provisional && (data.holdings || []).every(h => !h.buyPriceProvisional)) meta.isProvisional = false;
-  meta.lastUpdated = today;
-  data.meta = meta;
+  // benchmark index (best-effort)
+  const bm = data.benchmark;
+  if (bm && bm.yahooSymbol) {
+    try {
+      const ch = await fetchChart(bm.yahooSymbol);
+      bm.currentLevel = ch.cmp;
+      if (bm.startProvisional) { bm.startLevel = ch.cmp; bm.startProvisional = false; bm.startDate = today; }
+      console.log(`✓ benchmark ${bm.name} (${bm.yahooSymbol}): level ${ch.cmp}`);
+    } catch (e) {
+      console.log(`- benchmark fetch failed (${e && e.message || e}); keeping prior level`);
+    }
+  }
+  data.meta = data.meta || {};
+  data.meta.lastUpdated = today;
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
-  console.log(`\nUpdated ${n} paper holding(s) -> data/paper-trades.json; cash ₹${data.cash}`);
+  console.log(`\nUpdated ${n} holding(s) -> data/paper-trades.json`);
   console.log('Reminder: re-embed into tracker.html with  node tools/embed_data.js');
 }
 

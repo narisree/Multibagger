@@ -27,6 +27,35 @@
 
 ---
 
+## Paper-trading ledger — ₹50,000 conviction-weighted (booked 2026-06-13)
+
+> A measurement experiment, not advice. Trades are **booked now** at the screen-date price and
+> **marked to market** as months pass. P&L is **realized-not-predicted**. Benchmark: Nifty Smallcap
+> 250. **6-month review: 2026-12-13.** Drives the top panel of `../tracker.html` via
+> `../data/paper-trades.json`. Weights = composite ÷ Σcomposite (Σ = 360); shares = floor(50000·w/buy).
+
+| # | Ticker | Conviction | Composite | Weight | Buy ₹ | Shares | Invested ₹ |
+|---|---|---|---:|---:|---:|---:|---:|
+| 1 | ELECON | High | 79 | 21.9% | 510.00 | 21 | 10,710.00 |
+| 2 | SKYGOLD | High | 78 | 21.7% | 490.00 | 22 | 10,780.00 |
+| 3 | SKIPPER | High | 76 | 21.1% | 572.70 | 18 | 10,308.60 |
+| 4 | TIMETECHNO | Medium | 65 | 18.1% | 175.00 | 51 | 8,925.00 |
+| 5 | CYIENTDLM | Medium | 62 | 17.2% | 452.00 | 19 | 8,588.00 |
+| | **Total invested** | | | | | | **49,311.60** |
+| | **Cash (residual)** | | | | | | **688.40** |
+| | **Starting capital** | | | | | | **50,000.00** |
+
+Buy prices are provisional CMP at 13 Jun 2026; the GitHub Actions pipeline overwrites `currentPrice`
+and the benchmark level so the book becomes live. At the 6-month review, record realized P&L vs the
+benchmark per name and in aggregate in the methodology-review log below.
+
+**Paper-book review log**
+| Date | Portfolio value | Total P&L (₹ / %) | Benchmark return | Notes |
+|---|---|---|---|---|
+| 2026-06-13 | ₹50,000 (entry) | ₹0 / 0.0% | 0.0% (baseline) | Book opened; awaiting first live mark from the Actions pipeline. |
+
+---
+
 ## How to use this file
 
 1. **On accepting a stock**, add a position block (entry date, price, scores, tier, thesis,
@@ -41,28 +70,16 @@
 
 ---
 
-## Paper Portfolio — ₹50,000 (started 2026-06-13, review 2026-12-13)
-Conviction-weighted across the fresh-5 screen. Realized mark-to-market; not a forecast. Lives in
-`../data/paper-trades.json`, shown in `../tracker.html`. Buy prices are June-2026 snapshots,
-re-executed at real prices on the first live fetch.
+## Fresh screen (2026-06-13) — the paper book's 5 picks
+ELECON (High 79) · SKYGOLD (High 78) · SKIPPER (High 76) · TIMETECHNO (Medium 65) · CYIENTDLM (Medium 62).
+All 5 pass the hard filters with no red flags and seed the ₹50,000 paper book above.
+Excluded by guardrails: TRITURBINE (ASM surveillance), ZENTEC & AETHER (CMP > ₹1,000),
+DCXINDIA (FY26 net loss), TARIL (pledge > 25%), INOXWIND (promoter stake cut / WC stress),
+BORORENEW (elevated debt / rights issue). See `../screener.html` → "Excluded & why".
 
-| Pick | Conviction | Composite | Weight | Buy ₹ (prov.) | Shares | Invested ₹ |
-|---|---|---|---|---|---|---|
-| SKYGOLD | High | 78 | 24.2% | 513.05 | 23 | 11,800 |
-| SKIPPER | Medium | 73 | 22.7% | 572.70 | 19 | 10,881 |
-| ELECON | Medium | 66 | 20.5% | 510.00 | 20 | 10,200 |
-| CYIENTDLM | Watch | 54 | 16.8% | 452.00 | 18 | 8,136 |
-| TIMETECHNO | Watch | 51 | 15.8% | 167.00 | 47 | 7,849 |
-
-Invested ₹48,866 · Cash ₹1,134 · Capital ₹50,000. Benchmark: Nifty Smallcap 250 (set on first fetch).
-
-## Fresh-5 screen (2026-06-13)
-The current screener shortlist is the five above. Excluded by guardrails: TRITURBINE (ASM),
-ZENTEC & AETHER (CMP > ₹1,000), DCXINDIA (loss-making), TARIL (pledge), INOXWIND (promoters selling).
-
-## Archived prior screen (2026-06-13, original 6)
-MARKSANS (tracked, above) · HBLENGINE · MAHSEAMLES · CONTROLPR · GOLDIAM · IONEXCHANG.
-Saved at `../data/archive/candidates-2026-06-13-original6.json`.
+> **Prior shortlist archived.** The earlier screen (MARKSANS, HBLENGINE, CONTROLPR, GOLDIAM,
+> MAHSEAMLES, IONEXCHANG) is preserved at `../data/archive/candidates-2026-06-13.json` — nothing
+> lost. **MARKSANS** remains independently tracked as an accepted position above.
 
 ---
 

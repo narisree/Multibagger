@@ -51,16 +51,20 @@
   .spark{vertical-align:middle}
   footer.app{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);color:var(--faint);font-size:11.5px}
   .empty{padding:30px;text-align:center;color:var(--muted)}
-  .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:26px 0 10px;font-weight:600}
-  .section-title .hint{text-transform:none;letter-spacing:0;color:var(--faint);font-size:11.5px;font-weight:400;margin-left:8px}
-  .paper-hd{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
-  .pcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
-  .pcard .v{font-size:17px;font-weight:680;letter-spacing:.2px}
-  .pcard .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+  /* paper portfolio */
+  section.paper{margin:20px 0 8px}
+  .paphd{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:12px}
+  .paphd h2{font-size:17px;margin:0;font-weight:660}
+  .paphd .papsub{color:var(--muted);font-size:12px}
+  .paphd .papsub b{color:var(--accent)}
+  .sechd{font-size:13px;margin:30px 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .papkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-bottom:14px}
+  .papkpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .papkpi .v{font-size:17px;font-weight:680;font-variant-numeric:tabular-nums}
+  .papkpi .l{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
   .cv-High{color:#bff3d4;background:var(--up-bg);border:1px solid #225f3c}
   .cv-Medium{color:#f0d9a8;background:var(--reduce-bg);border:1px solid #6a521c}
-  .cv-Watch{color:#cbd2de;background:#20242e;border:1px solid #39404e}
-  .prov{color:var(--reduce);font-weight:700}
+  .papnote{margin-top:10px;color:var(--faint);font-size:11.5px;line-height:1.55}
 </style>
 </head>
 <body>
@@ -81,29 +85,35 @@
     <div class="body" id="alertBody"></div>
   </div>
 
-  <div class="section-title">📈 Paper Portfolio — ₹50,000<span class="hint">5 multibagger picks · conviction-weighted · 6-month test · realized P&amp;L, not a forecast</span></div>
-  <div id="paperProv" class="banner demo" style="display:none"></div>
-  <div class="paper-hd" id="paperKpis"></div>
-  <table id="paperTbl">
-    <thead>
-      <tr>
-        <th>Pick / Name</th>
-        <th class="num">Conv.</th>
-        <th class="num">Wt %</th>
-        <th class="num">Buy ₹</th>
-        <th class="num">Sh</th>
-        <th class="num">Invested ₹</th>
-        <th class="num">CMP ₹</th>
-        <th class="num">Value ₹</th>
-        <th class="num">P&amp;L ₹</th>
-        <th class="num">P&amp;L %</th>
-        <th>Trend</th>
-      </tr>
-    </thead>
-    <tbody id="paperRows"></tbody>
-  </table>
+  <section class="paper" id="paperSection" style="display:none">
+    <div class="paphd">
+      <h2>Paper Portfolio — ₹50,000</h2>
+      <div class="papsub" id="papSub">—</div>
+    </div>
+    <div class="papkpis" id="papKpis"></div>
+    <table class="paptbl">
+      <thead>
+        <tr>
+          <th>Pick</th>
+          <th>Conviction</th>
+          <th class="num">Weight</th>
+          <th class="num">Buy ₹</th>
+          <th class="num">Shares</th>
+          <th class="num">Invested ₹</th>
+          <th class="num">CMP ₹</th>
+          <th class="num">Value ₹</th>
+          <th class="num">P&amp;L ₹</th>
+          <th class="num">P&amp;L %</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody id="papRows"></tbody>
+    </table>
+    <div class="papnote" id="papNote"></div>
+  </section>
 
-  <div class="section-title">Accepted positions (PHASE 2)<span class="hint">stocks you've formally accepted into live tracking</span></div>
+  <h2 class="sechd">Accepted positions — tracked book</h2>
+
   <table>
     <thead>
       <tr>
@@ -192,64 +202,7 @@
       rows.appendChild(tr);
     });
   }
-
-  // ---- Paper Portfolio (₹50,000 conviction-weighted test) ----
-  function money(n){ return (n==null||isNaN(n))?'—':'₹'+fmt(n,0); }
-  function pcard(v,l){ return '<div class="pcard"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>'; }
-  function daysBetween(a,b){ return Math.round((b-a)/86400000); }
-
-  function loadPaper(){
-    var emb=function(){ try{ return JSON.parse(document.getElementById('paper-data').textContent); }catch(e){ return null; } };
-    if(location.protocol==='file:'){ renderPaper(emb()); return; }
-    fetch('data/paper-trades.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(renderPaper).catch(function(){ renderPaper(emb()); });
-  }
-
-  function renderPaper(data){
-    if(!data||!data.holdings){ return; }
-    var m=data.meta||{}, hold=data.holdings||[], cash=data.cash||0, cap=m.startingCapital||50000;
-    var invested=0, value=0;
-    hold.forEach(function(h){ var cp=(h.currentPrice!=null?h.currentPrice:h.buyPrice);
-      var v=cp*h.shares; h._value=v; h._pnl=v-h.invested; h._pnlPct=h.invested?h._pnl/h.invested*100:0;
-      invested+=h.invested; value+=v; });
-    var totalValue=value+cash, totalPnl=totalValue-cap, totalPnlPct=cap?totalPnl/cap*100:0;
-    var bench=m.benchmark||{}, benchRet=(bench.startLevel&&bench.currentLevel)?(bench.currentLevel-bench.startLevel)/bench.startLevel*100:null;
-    var now=new Date(), start=m.startDate?new Date(m.startDate):now, review=m.reviewDate?new Date(m.reviewDate):now;
-    var elapsed=Math.max(0,daysBetween(start,now)), toReview=Math.max(0,daysBetween(now,review));
-
-    var pb=document.getElementById('paperProv');
-    if(m.isProvisional){ pb.style.display='block'; pb.innerHTML='<b>Provisional entry.</b> '+(m.note||''); }
-
-    document.getElementById('paperKpis').innerHTML=
-      pcard(money(cap),'Capital')+
-      pcard(money(totalValue),'Current value')+
-      pcard('<span class="'+cls(totalPnl)+'">'+(totalPnl>=0?'+':'')+'₹'+fmt(totalPnl,0)+'</span>','Total P&L (₹)')+
-      pcard('<span class="'+cls(totalPnl)+'">'+pct(totalPnlPct)+'</span>','Total P&L (%)')+
-      pcard(benchRet==null?'pending':('<span class="'+cls(benchRet)+'">'+pct(benchRet)+'</span>'),'Nifty Smallcap')+
-      pcard(elapsed+'d&nbsp;/&nbsp;'+toReview+'d','Elapsed / to review');
-
-    var rows=document.getElementById('paperRows'); rows.innerHTML='';
-    hold.forEach(function(h){
-      var tr=document.createElement('tr');
-      tr.innerHTML=
-        '<td class="tk">'+h.ticker+'<span class="nm">'+(h.name||'')+' · '+(h.sector||'')+'</span></td>'+
-        '<td class="num"><span class="pill cv-'+(h.conviction||'Watch')+'">'+(h.conviction||'')+'</span></td>'+
-        '<td class="num">'+fmt(h.weightPct,1)+'</td>'+
-        '<td class="num">'+fmt(h.buyPrice,1)+(h.buyPriceProvisional?'<span class="prov">*</span>':'')+'</td>'+
-        '<td class="num">'+fmt(h.shares)+'</td>'+
-        '<td class="num">'+fmt(h.invested,0)+'</td>'+
-        '<td class="num">'+fmt(h.currentPrice,1)+'</td>'+
-        '<td class="num">'+fmt(h._value,0)+'</td>'+
-        '<td class="num '+cls(h._pnl)+'">'+(h._pnl>=0?'+':'')+fmt(h._pnl,0)+'</td>'+
-        '<td class="num '+cls(h._pnl)+'">'+pct(h._pnlPct)+'</td>'+
-        '<td>'+sparkline(h.priceSeries)+'</td>';
-      rows.appendChild(tr);
-    });
-    if(m.lastUpdated){ document.getElementById('updated').textContent=m.lastUpdated; }
-  }
-
-  load();
-  loadPaper();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',load); else load();
 })();
 </script>
 
@@ -294,7 +247,94 @@
 }
 </script>
 
-<!-- ===================== EMBEDDED PAPER-TRADES ISLAND (fallback copy of data/paper-trades.json) ===================== -->
+<!-- ===================== PAPER-PORTFOLIO APP ===================== -->
+<script>
+(function(){
+  'use strict';
+  function fmt(n,d){ if(n==null||isNaN(n)) return '—'; return Number(n).toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+  function pct(n){ if(n==null||isNaN(n)) return '—'; return (n>=0?'+':'')+fmt(n,1)+'%'; }
+  function cls(n){ return n>0?'pos':(n<0?'neg':''); }
+  function sparkline(series){
+    if(!series||series.length<2) return '';
+    var w=120,h=28,pad=2, min=Math.min.apply(null,series),max=Math.max.apply(null,series),rng=(max-min)||1;
+    var pts=series.map(function(v,i){ var x=pad+i*(w-2*pad)/(series.length-1); var y=h-pad-((v-min)/rng)*(h-2*pad); return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+    var up=series[series.length-1]>=series[0], col=up?'var(--up)':'var(--down)';
+    return '<svg class="spark" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><polyline fill="none" stroke="'+col+'" stroke-width="1.5" points="'+pts+'"/></svg>';
+  }
+  function papkpi(l,v){ return '<div class="papkpi"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>'; }
+  function days(a,b){ return Math.round((b-a)/86400000); }
+
+  function load(){
+    var embedded=function(){ try{ return JSON.parse(document.getElementById('paper-data').textContent); }catch(e){ return null; } };
+    if(location.protocol==='file:'){ boot(embedded()); return; }
+    fetch('data/paper-trades.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(boot).catch(function(){ boot(embedded()); });
+  }
+
+  function boot(data){
+    if(!data||!data.holdings){ return; }
+    document.getElementById('paperSection').style.display='block';
+    var m=data.meta||{}, hs=data.holdings||[], bm=data.benchmark||{};
+    var startCap=m.startingCapital||50000;
+
+    // mark-to-market
+    var invested=0, value=0;
+    hs.forEach(function(h){ invested+=(h.invested||0); value+=(h.currentPrice!=null?h.currentPrice:h.buyPrice)*(h.shares||0); });
+    var cash=(data.cash!=null)?data.cash:(startCap-invested);
+    var curValue=value+cash;
+    var pnl=curValue-startCap, pnlPct=startCap?pnl/startCap*100:0;
+    var bmRet=(bm.startLevel&&bm.currentLevel)?((bm.currentLevel-bm.startLevel)/bm.startLevel*100):null;
+
+    // countdown to the 6-month review
+    var now=new Date();
+    var start=m.startDate?new Date(m.startDate+'T00:00:00'):now;
+    var review=m.reviewDate?new Date(m.reviewDate+'T00:00:00'):now;
+    var elapsed=Math.max(0,days(start,now)), toReview=days(now,review);
+
+    document.getElementById('papSub').innerHTML=
+      'Conviction-weighted across '+hs.length+' fresh multibaggers · booked '+(m.startDate||'—')+
+      ' · '+(m.horizonMonths||6)+'-month review <b>'+(m.reviewDate||'—')+'</b>';
+
+    document.getElementById('papKpis').innerHTML=''+
+      papkpi('Starting capital','₹'+fmt(startCap,0))+
+      papkpi('Invested','₹'+fmt(invested,0))+
+      papkpi('Cash','₹'+fmt(cash,0))+
+      papkpi('Current value','₹'+fmt(curValue,0))+
+      papkpi('Total P&amp;L','<span class="'+cls(pnl)+'">₹'+fmt(pnl,0)+' ('+pct(pnlPct)+')</span>')+
+      papkpi((bm.name||'Benchmark')+' return',bmRet!=null?'<span class="'+cls(bmRet)+'">'+pct(bmRet)+'</span>':'—')+
+      papkpi('Days elapsed',fmt(elapsed,0))+
+      papkpi('Days to review',toReview>0?fmt(toReview,0):'due');
+
+    var rows=document.getElementById('papRows'); rows.innerHTML='';
+    hs.forEach(function(h){
+      var cmp=(h.currentPrice!=null?h.currentPrice:h.buyPrice);
+      var val=cmp*(h.shares||0);
+      var hp=val-(h.invested||0), hpp=(h.invested?hp/h.invested*100:0);
+      var cv=(h.conviction==='High'?'cv-High':'cv-Medium');
+      var tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td class="tk">'+h.ticker+'<span class="nm">'+(h.name||'')+'</span></td>'+
+        '<td><span class="pill '+cv+'">'+(h.conviction||'—')+'</span></td>'+
+        '<td class="num">'+fmt((h.weight||0)*100,1)+'%</td>'+
+        '<td class="num">'+fmt(h.buyPrice,2)+'</td>'+
+        '<td class="num">'+fmt(h.shares,0)+'</td>'+
+        '<td class="num">'+fmt(h.invested,0)+'</td>'+
+        '<td class="num">'+fmt(cmp,2)+'</td>'+
+        '<td class="num">'+fmt(val,0)+'</td>'+
+        '<td class="num '+cls(hp)+'">'+(hp>=0?'+':'')+fmt(hp,0)+'</td>'+
+        '<td class="num '+cls(hpp)+'">'+pct(hpp)+'</td>'+
+        '<td>'+sparkline(h.priceSeries)+'</td>';
+      rows.appendChild(tr);
+    });
+
+    document.getElementById('papNote').textContent=(m.note||'')+(bm.note?(' '+bm.note):'');
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',load); else load();
+})();
+</script>
+
+<!-- ===================== PAPER-PORTFOLIO DATA ISLAND (fallback copy of data/paper-trades.json) ===================== -->
 <script id="paper-data" type="application/json">
 {
   "meta": {
@@ -302,61 +342,100 @@
     "startingCapital": 50000,
     "horizonMonths": 6,
     "reviewDate": "2026-12-13",
-    "allocation": "conviction-weighted (weight proportional to composite score)",
+    "allocation": "conviction-weighted",
+    "benchmarkName": "Nifty Smallcap 250",
     "lastUpdated": "2026-06-13",
-    "isProvisional": true,
-    "note": "Buy prices are provisional June-2026 snapshots; the first live Actions fetch re-executes each holding at the real market price and recomputes shares. P&L is REALIZED mark-to-market as time passes — NOT a forecast of the 6-month number. Not financial advice.",
-    "benchmark": { "name": "Nifty Smallcap 250", "nseIndex": "NIFTY SMALLCAP 250", "yahooSymbol": "^CNXSC", "startLevel": null, "currentLevel": null }
+    "isIllustrative": false,
+    "note": "A ₹50,000 paper-trading experiment that BOOKS the 5 fresh multibaggers now and marks them to market as the months pass. It reports REALIZED P&L vs a Nifty Smallcap benchmark — it does NOT predict a future number. Weights are conviction-weighted: weight_i = composite_i / Σcomposite (composites computed by assets/scoring.js from data/candidates.json), then shares_i = floor(50000·weight_i / buyPrice_i), remainder → cash. Buy prices are the provisional CMP at screen date (13 Jun 2026); the GitHub Actions pipeline refreshes currentPrice and the benchmark level so the book becomes live and self-updating. The 6-month review date is 2026-12-13. Not financial advice.",
+    "methodNote": "weight_i = composite_i / Σcomposite ; shares_i = floor(startingCapital · weight_i / buyPrice_i) ; cash = startingCapital − Σ invested. Σcomposite = 360 across the 5 picks (ELECON 79, SKYGOLD 78, SKIPPER 76, TIMETECHNO 65, CYIENTDLM 62)."
   },
   "holdings": [
     {
-      "ticker": "SKYGOLD", "yahooSymbol": "SKYGOLD.NS", "name": "Sky Gold & Diamonds",
-      "sector": "Gems & Jewellery (B2B)", "conviction": "High", "composite": 78, "weightPct": 24.2,
-      "buyDate": "2026-06-13", "buyPrice": 513.05, "buyPriceProvisional": true,
-      "shares": 23, "invested": 11800.15, "currentPrice": 513.05,
-      "thesis": "B2B jewellery scaling with India's market formalisation; ROCE ~30%, no pledge, sales +77% YoY.",
-      "invalidation": "Net debt rising not falling, OCF persistently weak, anchor-customer loss, or pledge appearing.",
-      "priceSeries": [255,272,290,283,305,325,318,345,372,360,390,415,405,432,448,438,460,448,470,488,478,500,490,505,520,510,525,515,520,513.05]
+      "ticker": "ELECON",
+      "yahooSymbol": "ELECON.NS",
+      "name": "Elecon Engineering Co. Ltd",
+      "conviction": "High",
+      "composite": 79,
+      "weight": 0.2194,
+      "buyPrice": 510.00,
+      "shares": 21,
+      "invested": 10710.00,
+      "currentPrice": 510.00,
+      "thesis": "Debt-free industrial-gears leader (~25% ROCE) compounding on the power/mining/cement/defence capex cycle.",
+      "invalidation": "Order book stalling 2+ quarters, OPM −300bps for two quarters, debt-funded M&A (D/E > 0.5), ASM/GSM, or a decisive close below the 200-DMA.",
+      "priceSeries": [395,408,420,415,432,448,440,455,468,460,475,488,482,495,505,498,488,500,492,505,512,506,498,505,514,508,500,508,515,510.00]
     },
     {
-      "ticker": "SKIPPER", "yahooSymbol": "SKIPPER.NS", "name": "Skipper Ltd",
-      "sector": "Power T&D / Transmission Towers", "conviction": "Medium", "composite": 73, "weightPct": 22.7,
-      "buyDate": "2026-06-13", "buyPrice": 572.70, "buyPriceProvisional": true,
-      "shares": 19, "invested": 10881.30, "currentPrice": 572.70,
-      "thesis": "India's largest transmission-tower maker; grid-capex super-cycle, no pledge, PAT +63% Q4.",
-      "invalidation": "Order inflow stalling, OCF negative, D/E > 1.0, pledge, or surveillance entry.",
-      "priceSeries": [375,392,410,402,425,445,438,460,485,478,500,520,512,535,525,510,525,540,532,548,540,555,548,560,552,565,558,568,575,572.70]
+      "ticker": "SKIPPER",
+      "yahooSymbol": "SKIPPER.NS",
+      "name": "Skipper Ltd",
+      "conviction": "High",
+      "composite": 76,
+      "weight": 0.2111,
+      "buyPrice": 572.70,
+      "shares": 18,
+      "invested": 10308.60,
+      "currentPrice": 572.70,
+      "thesis": "Power T&D tower/EPC play on the grid-capex super-cycle; ROIC ~31%, no pledge, Q4 PAT +63%.",
+      "invalidation": "Order book stalling 2+ quarters, OCF negative, D/E above 1.0, any promoter pledge, ASM/GSM, or a decisive close below the 200-DMA.",
+      "priceSeries": [320,340,365,355,385,410,400,430,455,445,470,495,485,510,530,520,545,560,552,540,555,568,560,548,560,575,566,558,568,572.70]
     },
     {
-      "ticker": "ELECON", "yahooSymbol": "ELECON.NS", "name": "Elecon Engineering",
-      "sector": "Capital Goods / Industrial Gears", "conviction": "Medium", "composite": 66, "weightPct": 20.5,
-      "buyDate": "2026-06-13", "buyPrice": 510.00, "buyPriceProvisional": true,
-      "shares": 20, "invested": 10200.00, "currentPrice": 510.00,
-      "thesis": "Asia's top industrial-gear maker; debt-free, ROCE ~25%, multi-sector capex tailwind.",
-      "invalidation": "Order-inflow decline 2 quarters, OPM -300bps, ROCE < 18%, pledge, or close below 200-DMA.",
-      "priceSeries": [420,438,455,447,470,488,479,500,520,512,535,555,548,570,560,548,560,540,528,545,532,520,505,515,500,508,495,505,512,510]
+      "ticker": "SKYGOLD",
+      "yahooSymbol": "SKYGOLD.NS",
+      "name": "Sky Gold & Diamonds Ltd",
+      "conviction": "High",
+      "composite": 78,
+      "weight": 0.2167,
+      "buyPrice": 490.00,
+      "shares": 22,
+      "invested": 10780.00,
+      "currentPrice": 490.00,
+      "thesis": "B2B gold-jewellery scaler on jewellery formalisation; ~30% ROCE, no pledge, deleveraging, sales +77%.",
+      "invalidation": "Margin contraction, working capital/debt re-expanding, a large customer loss, OCF persistently negative, ASM/GSM, or a decisive close below the 200-DMA.",
+      "priceSeries": [255,275,300,290,320,350,340,370,400,390,420,445,435,460,478,468,485,495,488,475,488,500,492,480,490,500,494,485,492,490.00]
     },
     {
-      "ticker": "CYIENTDLM", "yahooSymbol": "CYIENTDLM.NS", "name": "Cyient DLM",
-      "sector": "Electronics Manufacturing (EMS)", "conviction": "Watch", "composite": 54, "weightPct": 16.8,
-      "buyDate": "2026-06-13", "buyPrice": 452.00, "buyPriceProvisional": true,
-      "shares": 18, "invested": 8136.00, "currentPrice": 452.00,
-      "thesis": "EMS growing ~30% CAGR; record order book (B2B 1.46), ROCE ~10% targeted to ~25% — high risk/upside.",
-      "invalidation": "ROCE not improving over 4-6 quarters, book-to-bill < 1.0, WC ballooning, or a dilutive raise.",
-      "priceSeries": [300,318,335,328,350,372,360,385,372,360,348,362,378,365,352,368,380,372,360,375,388,402,392,410,425,415,430,442,448,452]
+      "ticker": "TIMETECHNO",
+      "yahooSymbol": "TIMETECHNO.NS",
+      "name": "Time Technoplast Ltd",
+      "conviction": "Medium",
+      "composite": 65,
+      "weight": 0.1806,
+      "buyPrice": 175.00,
+      "shares": 51,
+      "invested": 8925.00,
+      "currentPrice": 175.00,
+      "thesis": "Global #2 in composite cylinders + steady industrial packaging; cheap, debt-light, H2/CNG optionality.",
+      "invalidation": "ROCE below 12%, debt/EBITDA above 2.0, composite growth stalling 2+ quarters, OCF negative, or a decisive close below the 200-DMA.",
+      "priceSeries": [118,124,132,128,138,148,144,152,160,156,164,170,166,172,178,174,168,172,176,170,174,178,173,168,174,178,172,170,176,175.00]
     },
     {
-      "ticker": "TIMETECHNO", "yahooSymbol": "TIMETECHNO.NS", "name": "Time Technoplast",
-      "sector": "Industrial Materials / Packaging", "conviction": "Watch", "composite": 51, "weightPct": 15.8,
-      "buyDate": "2026-06-13", "buyPrice": 167.00, "buyPriceProvisional": true,
-      "shares": 47, "invested": 7849.00, "currentPrice": 167.00,
-      "thesis": "World #2 composite cylinders (CNG/H2/LPG) + #1 plastic drums; cheap (~22x), debt trending down.",
-      "invalidation": "ROCE stalling < 14%, value-added mix not improving, debt rising, or WC deteriorating.",
-      "priceSeries": [205,210,202,196,188,192,184,178,182,175,180,172,168,174,170,165,171,167,163,169,166,162,168,170,166,169,165,168,166,167]
+      "ticker": "CYIENTDLM",
+      "yahooSymbol": "CYIENTDLM.NS",
+      "name": "Cyient DLM Ltd",
+      "conviction": "Medium",
+      "composite": 62,
+      "weight": 0.1722,
+      "buyPrice": 452.00,
+      "shares": 19,
+      "invested": 8588.00,
+      "currentPrice": 452.00,
+      "thesis": "Pure-play high-reliability EMS riding India's electronics boom; record order book, book-to-bill ~1.46 (highest risk/upside).",
+      "invalidation": "Book-to-bill below 1.0, ROCE not improving over 12-18 months, working capital ballooning, OCF persistently negative, ASM/GSM, or a decisive close below the 200-DMA.",
+      "priceSeries": [300,320,345,335,365,395,385,415,440,428,455,478,468,490,510,498,475,462,448,435,448,460,452,440,452,465,458,448,455,452.00]
     }
   ],
-  "cash": 1133.55,
-  "totals": { "invested": 48866.45 }
+  "cash": 688.40,
+  "benchmark": {
+    "name": "Nifty Smallcap 250",
+    "yahooSymbol": "^CNXSC",
+    "startDate": "2026-06-13",
+    "startLevel": 18500.00,
+    "currentLevel": 18500.00,
+    "startProvisional": true,
+    "note": "Provisional start level pending the first live fetch; the GitHub Actions pipeline refreshes currentLevel (and re-baselines startLevel on the first run while startProvisional is true) so the benchmark return is real and dated."
+  }
 }
 </script>
 </body>

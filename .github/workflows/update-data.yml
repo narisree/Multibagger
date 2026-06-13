@@ -41,7 +41,7 @@ jobs:
       - name: Fetch portfolio (Phase 2) data
         run: node tools/fetch_yahoo.js --portfolio || echo "portfolio fetch skipped/failed (see log)"
 
-      - name: Fetch paper-portfolio data
+      - name: Fetch paper-portfolio (₹50k) data
         run: node tools/fetch_yahoo.js --paper || echo "paper fetch skipped/failed (see log)"
 
       - name: Setup Python
