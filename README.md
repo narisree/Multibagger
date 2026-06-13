@@ -89,6 +89,30 @@ console.log(c.ticker,e.fundamentalScore,e.technicalScore,e.composite,e.tier);});
 
 ---
 
+## Live data via Yahoo Finance (optional auto-fill)
+
+`tools/fetch_yahoo.js` populates the data files from Yahoo's public JSON API (no dependencies,
+Node 18+). Add a `yahooSymbol` to each record — NSE uses the `.NS` suffix, BSE uses `.BO`
+(e.g. `"yahooSymbol": "NESCO.NS"`) — then:
+
+```bash
+node tools/fetch_yahoo.js --candidates   # refresh CMP, technicals, ratios in data/candidates.json
+node tools/fetch_yahoo.js --portfolio    # daily PHASE 2 update of data/portfolio.json
+node tools/embed_data.js                 # re-embed JSON into the HTML offline fallback
+```
+
+**Yahoo fills automatically:** CMP, day-change %, ~1y price series, 50/200-DMA flags, RSI(14),
+52-week high/low, market cap, P/E, P/B, ROE, debt/equity, margins.
+
+**Yahoo cannot provide (still manual, from AMFI/NSE-BSE/filings):** AMFI cap classification,
+promoter holding & **pledge**, ROCE, ASM/GSM/T2T surveillance flags, order book, governance.
+
+> **Environment note:** this remote environment's network egress allowlist currently blocks
+> `query1.finance.yahoo.com`. To use the fetcher here, add `query1.finance.yahoo.com` and
+> `query2.finance.yahoo.com` to the environment's network settings
+> ([docs](https://code.claude.com/docs/en/claude-code-on-the-web)). It also runs anywhere with
+> normal internet (your laptop), where no allowlist applies.
+
 ## Workflow
 
 ### PHASE 1 — build the shortlist
