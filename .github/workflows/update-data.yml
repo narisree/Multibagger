@@ -1,0 +1,58 @@
+name: Update market data
+
+# Fetches live prices/technicals from Yahoo Finance and commits the refreshed
+# data back to the repo. This runs on GitHub-hosted runners, which have full
+# internet access (unlike a restricted dev container), so the fetch actually
+# works here. With GitHub Pages enabled, the dashboards update automatically.
+#
+# Requires each record in data/candidates.json / data/portfolio.json to carry a
+# "yahooSymbol" (e.g. "NESCO.NS" for NSE, ".BO" for BSE). Records without one
+# are skipped, so an empty/demo dataset simply produces no changes.
+
+on:
+  workflow_dispatch:        # run manually from the Actions tab
+  schedule:
+    - cron: '0 11 * * 1-5'  # ~16:30 IST, weekdays, after NSE close (10:00 UTC close)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch candidates (Phase 1) data
+        run: node tools/fetch_yahoo.js --candidates || echo "candidates fetch skipped/failed (see log)"
+
+      - name: Fetch portfolio (Phase 2) data
+        run: node tools/fetch_yahoo.js --portfolio || echo "portfolio fetch skipped/failed (see log)"
+
+      - name: Re-embed data into dashboards
+        run: node tools/embed_data.js
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "multibagger-bot"
+          git config user.email "actions@github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add data/*.json screener.html tracker.html
+            git commit -m "chore(data): scheduled market-data refresh [skip ci]"
+            git push
+            echo "Pushed refreshed data."
+          else
+            echo "No data changes."
+          fi

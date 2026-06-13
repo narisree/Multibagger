@@ -113,11 +113,21 @@ node tools/embed_data.js                 # re-embed JSON into the HTML offline f
 **Yahoo cannot provide (still manual, from AMFI/NSE-BSE/filings):** AMFI cap classification,
 promoter holding & **pledge**, ROCE, ASM/GSM/T2T surveillance flags, order book, governance.
 
-> **Environment note:** this remote environment's network egress allowlist currently blocks
-> `query1.finance.yahoo.com`. To use the fetcher here, add `query1.finance.yahoo.com` and
-> `query2.finance.yahoo.com` to the environment's network settings
-> ([docs](https://code.claude.com/docs/en/claude-code-on-the-web)). It also runs anywhere with
-> normal internet (your laptop), where no allowlist applies.
+> **Environment note:** a restricted dev container (e.g. Claude Code on the web with a GitHub-only
+> network policy) blocks every market-data host. The fetcher still runs anywhere with normal
+> internet — your laptop, or **GitHub Actions** (below), which is the recommended automated path.
+
+### Automated daily refresh (GitHub Actions)
+
+`.github/workflows/update-data.yml` runs the fetcher on GitHub-hosted runners — which have full
+internet access, so Yahoo is reachable there even when your local environment is locked down. It:
+
+1. runs on a weekday schedule (after NSE close) and on manual dispatch (Actions tab → *Run workflow*),
+2. refreshes `data/candidates.json` and `data/portfolio.json`, re-embeds them into the dashboards,
+3. commits the changes back to the branch.
+
+With GitHub Pages enabled, your dashboards then update themselves daily with no machine of your own
+running. Each record just needs a `yahooSymbol`; records without one are skipped.
 
 ## Workflow
 
