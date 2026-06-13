@@ -22,6 +22,7 @@
 **Daily log**
 | Date | CMP | Today % | Since entry | Notes (dated source) | Technicals | Thesis | Reco |
 |---|---|---|---|---|---|---|---|
+| 2026-06-13 | ₹257.25 | +2.9%* | +1.3% | Latest available 11 Jun: +2.9% on a **block deal**; USFDA final approval for Benzonatate ANDA (positive, in-thesis). *=11 Jun session. (Web aggregators, 11 Jun 2026) | >50-DMA (206) & >200-DMA (235); RSI ~60; golden cross intact | Intact | HOLD |
 | 2026-06-13 | ₹253.86 | — | 0.0% | Entry. No new filings/flags. (NSE/Screener, 10 Jun 2026 data) | >50-DMA (206) & >200-DMA (235); RSI ~60; golden cross | Intact | HOLD |
 
 ---
