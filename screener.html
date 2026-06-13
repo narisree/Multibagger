@@ -709,10 +709,12 @@
             '<span class="chip">PAT CAGR(3y) <b>'+fmt(f.patCagr3y)+'%</b></span>'+
             '<span class="chip">OPM <b>'+fmt(f.opm,1)+'%</b></span>'+
             '<span class="chip">P/E <b>'+fmt(f.pe,1)+'</b></span>'+
+            (f.sectorPe?'<span class="chip">Sector P/E <b>'+fmt(f.sectorPe,1)+'</b></span>':'')+
             '<span class="chip">PEG <b>'+fmt(f.peg,2)+'</b></span>'+
             '<span class="chip">Promoter <b>'+fmt(f.promoterHolding,1)+'%</b></span>'+
             '<span class="chip">Pledge <b>'+fmt(f.pledge,1)+'%</b></span>'+
             '<span class="chip">Liq <b>₹'+fmt(c.avgDailyValueCr,1)+'cr/d</b></span>'+
+            ((c.deliveryPct!=null)?'<span class="chip">Delivery <b>'+fmt(c.deliveryPct,1)+'%</b></span>':'')+
           '</div>'+
           flags+
           '<h4 style="margin-top:14px">Multibagger thesis — the "why now"</h4><p>'+(th.core||'—')+'</p>'+
