@@ -173,19 +173,57 @@ def technicals_from_history(closes, vols, cmp_):
 # ----------------------------------------------------------------------------
 # NSE enrichers (each guarded)
 # ----------------------------------------------------------------------------
+def nse_equity_quote(nse, sym):
+    """Best-effort equity quote: try the typed call first, fall back to the bare call,
+    with a light retry. Different nse-lib versions accept/return slightly different shapes."""
+    last_err = None
+    for call in (
+        lambda: nse.quote(sym, type="equity"),
+        lambda: nse.quote(sym),
+    ):
+        for _ in range(2):
+            try:
+                q = call()
+                if q:
+                    return q
+            except TypeError:
+                break  # this call form's signature isn't supported; try the next form
+            except Exception as e:  # noqa: BLE001
+                last_err = e
+                time.sleep(0.6)
+    if last_err:
+        raise last_err
+    return None
+
+
 def enrich_quote(nse, sym, rec):
     """cmp, day change, 52w, P/E, sector P/E, market cap, traded value, delivery, surveillance."""
     try:
-        q = nse.quote(sym)
+        q = nse_equity_quote(nse, sym)
     except Exception as e:  # noqa: BLE001
         print(f"  ! {sym}: quote failed ({e})")
         return False
-    price = first_num(q, ("priceInfo", "lastPrice"), ("lastPrice",))
+    if not q:
+        print(f"  ! {sym}: empty quote response")
+        return False
+    price = first_num(q,
+                      ("priceInfo", "lastPrice"), ("lastPrice",),
+                      ("priceInfo", "close"), ("priceInfo", "previousClose"),
+                      ("data", 0, "lastPrice"), ("data", 0, "closePrice"),
+                      ("price",))
     if price is None:
-        print(f"  ! {sym}: no lastPrice in quote")
+        # One-time diagnostic so the real JSON shape surfaces in the Actions log
+        # (the first run is the validation step — see module docstring).
+        try:
+            top = sorted(q.keys()) if isinstance(q, dict) else type(q).__name__
+            pinfo = q.get("priceInfo") if isinstance(q, dict) else None
+            pkeys = sorted(pinfo.keys()) if isinstance(pinfo, dict) else pinfo
+            print(f"  ! {sym}: no lastPrice in quote | top-keys={top} | priceInfo={pkeys}")
+        except Exception:  # noqa: BLE001
+            print(f"  ! {sym}: no lastPrice in quote (could not introspect response)")
         return False
     rec["cmp"] = rnd(price)
-    pch = first_num(q, ("priceInfo", "pChange"), ("pChange",))
+    pch = first_num(q, ("priceInfo", "pChange"), ("pChange",), ("priceInfo", "change"))
 
     wk_max = first_num(q, ("priceInfo", "weekHighLow", "max"))
     wk_min = first_num(q, ("priceInfo", "weekHighLow", "min"))

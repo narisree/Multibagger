@@ -31,8 +31,13 @@ const ROOT = path.join(__dirname, '..');
 const today = new Date().toISOString().slice(0, 10);
 
 function die(msg) { console.error('\n' + msg + '\n'); process.exit(1); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function getJSON(url) {
+// Yahoo aggressively rate-limits shared/CI IPs (esp. GitHub Actions) with HTTP 429,
+// and occasionally 403. Retry with exponential backoff + jitter, alternating the
+// query1<->query2 hosts, before giving up. A real network/egress block (DNS) dies fast.
+async function getJSON(url, attempt = 0) {
+  const MAX = 4;
   let res;
   try {
     res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'application/json' } });
@@ -43,10 +48,22 @@ async function getJSON(url) {
           '  query1.finance.yahoo.com\n  query2.finance.yahoo.com\n' +
           'Docs: https://code.claude.com/docs/en/claude-code-on-the-web');
     }
+    if (attempt < MAX) { await sleep(500 * 2 ** attempt + Math.random() * 400); return getJSON(url, attempt + 1); }
     throw e;
   }
-  if (res.status === 403) die('Yahoo returned 403 (egress IP likely rate-limited/blocked by Yahoo). Try query2 host or run from a different network.');
-  if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
+  if ((res.status === 429 || res.status === 403) && attempt < MAX) {
+    const alt = url.includes('query1.') ? url.replace('query1.', 'query2.')
+              : url.includes('query2.') ? url.replace('query2.', 'query1.') : url;
+    await sleep(800 * 2 ** attempt + Math.random() * 500);
+    return getJSON(alt, attempt + 1);
+  }
+  if (res.status === 429 || res.status === 403) {
+    throw new Error('HTTP ' + res.status + ' for ' + url + ' (Yahoo rate-limited after ' + MAX + ' retries — common on CI IPs)');
+  }
+  if (!res.ok) {
+    if (res.status >= 500 && attempt < MAX) { await sleep(500 * 2 ** attempt); return getJSON(url, attempt + 1); }
+    throw new Error('HTTP ' + res.status + ' for ' + url);
+  }
   return res.json();
 }
 
@@ -128,24 +145,29 @@ async function updateCandidates() {
   let n = 0;
   for (const c of data.candidates || []) {
     if (!c.yahooSymbol) { console.log(`- ${c.ticker}: no yahooSymbol, skipped`); continue; }
-    const ch = await fetchChart(c.yahooSymbol);
-    c.cmp = ch.cmp;
-    c.technicals = Object.assign({}, c.technicals, {
-      above50DMA: ch.above50DMA, above200DMA: ch.above200DMA, rsi: ch.rsi,
-      weekHigh52: ch.weekHigh52, weekLow52: ch.weekLow52
-    });
-    c.priceSeries = ch.priceSeries;
-    const f = await fetchFundamentals(c.yahooSymbol);
-    if (f) {
-      c.fundamentals = Object.assign({}, c.fundamentals);
-      for (const k of ['marketCapCr', 'pe', 'pb', 'roe', 'debtEquity', 'npm', 'opm']) if (f[k] != null) {
-        if (k === 'marketCapCr') c.marketCapCr = f[k]; else c.fundamentals[k] = f[k];
+    try {
+      const ch = await fetchChart(c.yahooSymbol);
+      c.cmp = ch.cmp;
+      c.technicals = Object.assign({}, c.technicals, {
+        above50DMA: ch.above50DMA, above200DMA: ch.above200DMA, rsi: ch.rsi,
+        weekHigh52: ch.weekHigh52, weekLow52: ch.weekLow52
+      });
+      c.priceSeries = ch.priceSeries;
+      const f = await fetchFundamentals(c.yahooSymbol);
+      if (f) {
+        c.fundamentals = Object.assign({}, c.fundamentals);
+        for (const k of ['marketCapCr', 'pe', 'pb', 'roe', 'debtEquity', 'npm', 'opm']) if (f[k] != null) {
+          if (k === 'marketCapCr') c.marketCapCr = f[k]; else c.fundamentals[k] = f[k];
+        }
       }
+      c.illustrative = false;
+      addSource(c, 'CMP, technicals & market ratios (auto). India-specific fields still need manual sourcing.');
+      console.log(`✓ ${c.ticker} (${c.yahooSymbol}): CMP ₹${ch.cmp}, RSI ${ch.rsi}, >50DMA ${ch.above50DMA}, >200DMA ${ch.above200DMA}`);
+      n++;
+    } catch (e) {
+      console.log(`- ${c.ticker}: fetch failed (${e && e.message || e}); keeping prior values`);
     }
-    c.illustrative = false;
-    addSource(c, 'CMP, technicals & market ratios (auto). India-specific fields still need manual sourcing.');
-    console.log(`✓ ${c.ticker} (${c.yahooSymbol}): CMP ₹${ch.cmp}, RSI ${ch.rsi}, >50DMA ${ch.above50DMA}, >200DMA ${ch.above200DMA}`);
-    n++;
+    await sleep(300 + Math.random() * 400);
   }
   data.meta = data.meta || {};
   data.meta.screenDate = today;
@@ -160,12 +182,17 @@ async function updatePortfolio() {
   let n = 0;
   for (const p of data.positions || []) {
     if (!p.yahooSymbol) { console.log(`- ${p.ticker}: no yahooSymbol, skipped`); continue; }
-    const ch = await fetchChart(p.yahooSymbol);
-    p.cmp = ch.cmp; p.dayChangePct = ch.dayChangePct; p.priceSeries = ch.priceSeries;
-    p.illustrative = false;
-    const since = p.entryPrice ? ((ch.cmp - p.entryPrice) / p.entryPrice * 100) : null;
-    console.log(`✓ ${p.ticker}: CMP ₹${ch.cmp} (${ch.dayChangePct >= 0 ? '+' : ''}${ch.dayChangePct}% today, ${since != null ? (since >= 0 ? '+' : '') + since.toFixed(1) + '% since entry' : '—'})`);
-    n++;
+    try {
+      const ch = await fetchChart(p.yahooSymbol);
+      p.cmp = ch.cmp; p.dayChangePct = ch.dayChangePct; p.priceSeries = ch.priceSeries;
+      p.illustrative = false;
+      const since = p.entryPrice ? ((ch.cmp - p.entryPrice) / p.entryPrice * 100) : null;
+      console.log(`✓ ${p.ticker}: CMP ₹${ch.cmp} (${ch.dayChangePct >= 0 ? '+' : ''}${ch.dayChangePct}% today, ${since != null ? (since >= 0 ? '+' : '') + since.toFixed(1) + '% since entry' : '—'})`);
+      n++;
+    } catch (e) {
+      console.log(`- ${p.ticker}: fetch failed (${e && e.message || e}); keeping prior values`);
+    }
+    await sleep(300 + Math.random() * 400);
   }
   data.meta = data.meta || {};
   data.meta.lastUpdated = today;
@@ -191,6 +218,7 @@ async function updatePaper() {
     } catch (e) {
       console.log(`- ${h.ticker}: price fetch failed (${e && e.message || e}); keeping prior currentPrice`);
     }
+    await sleep(300 + Math.random() * 400);
   }
   // benchmark index (best-effort)
   const bm = data.benchmark;
