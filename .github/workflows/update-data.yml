@@ -63,6 +63,9 @@ jobs:
           TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
         run: python tools/fetch_twelvedata.py || echo "Twelve Data fetch skipped/failed (see log)"
 
+      - name: Mark prices to market from NSE Bhavcopy (EOD, no key)
+        run: python tools/fetch_bhavcopy.py || echo "Bhavcopy fetch skipped/failed (see log)"
+
       - name: Re-embed data into dashboards
         run: node tools/embed_data.js
 
