@@ -163,6 +163,23 @@ python tools/fetch_nse.py --portfolio
 The two fetchers are complementary: **Yahoo** gives price history → 50/200-DMA, RSI and ratios;
 **NSE** then overwrites CMP / P/E / 52-week / surveillance with the authoritative values.
 
+### Live equity prices via Twelve Data (required for live P&L on GitHub Actions)
+
+Yahoo rate-limits GitHub-Actions IPs (HTTP 429) and NSE serves a **price-stripped** quote to
+datacenter IPs (no `lastPrice`), so neither can mark the holdings to market from CI — only the
+Nifty Smallcap **benchmark** (NSE index endpoint) comes through. `tools/fetch_twelvedata.py`
+fixes this by pulling last prices from [Twelve Data](https://twelvedata.com), which does serve
+CI IPs. **One-time setup:**
+
+1. Create a free API key at [twelvedata.com](https://twelvedata.com) (Sign up → API key).
+2. Add it to the repo: **Settings → Secrets and variables → Actions → New repository secret**,
+   name it **`TWELVEDATA_API_KEY`**, paste the key.
+3. Re-run **Update market data** — holdings now mark to market and the paper book shows real P&L.
+
+It refreshes `cmp`/`currentPrice` across `candidates.json`, `portfolio.json` and
+`paper-trades.json` in one batched request (free tier is ample for this handful of symbols).
+Locally you can run it the same way: `TWELVEDATA_API_KEY=xxxx python tools/fetch_twelvedata.py`.
+
 ### Automated daily refresh (GitHub Actions)
 
 `.github/workflows/update-data.yml` runs both fetchers on GitHub-hosted runners — which have full

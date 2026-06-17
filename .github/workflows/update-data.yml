@@ -58,6 +58,11 @@ jobs:
           python tools/fetch_nse.py --portfolio || echo "NSE portfolio fetch skipped/failed (see log)"
           python tools/fetch_nse.py --paper || echo "NSE paper fetch skipped/failed (see log)"
 
+      - name: Fetch live equity prices (Twelve Data — not IP-blocked)
+        env:
+          TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
+        run: python tools/fetch_twelvedata.py || echo "Twelve Data fetch skipped/failed (see log)"
+
       - name: Re-embed data into dashboards
         run: node tools/embed_data.js
 

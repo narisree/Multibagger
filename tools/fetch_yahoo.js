@@ -37,7 +37,9 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // and occasionally 403. Retry with exponential backoff + jitter, alternating the
 // query1<->query2 hosts, before giving up. A real network/egress block (DNS) dies fast.
 async function getJSON(url, attempt = 0) {
-  const MAX = 4;
+  // Yahoo persistently 429s CI IPs, so keep retries low here — Twelve Data
+  // (tools/fetch_twelvedata.py) is the authoritative price source on Actions.
+  const MAX = 2;
   let res;
   try {
     res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'application/json' } });
