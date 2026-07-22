@@ -6,7 +6,7 @@
     "reviewDate": "2026-12-13",
     "allocation": "conviction-weighted",
     "benchmarkName": "Nifty Smallcap 250",
-    "lastUpdated": "2026-07-21",
+    "lastUpdated": "2026-07-22",
     "isIllustrative": false,
     "note": "A \u20b950,000 paper-trading experiment that BOOKS the 5 fresh multibaggers now and marks them to market as the months pass. It reports REALIZED P&L vs a Nifty Smallcap benchmark \u2014 it does NOT predict a future number. Weights are conviction-weighted: weight_i = composite_i / \u03a3composite (composites computed by assets/scoring.js from data/candidates.json), then shares_i = floor(50000\u00b7weight_i / buyPrice_i), remainder \u2192 cash. Buy prices are the provisional CMP at screen date (13 Jun 2026); the GitHub Actions pipeline refreshes currentPrice and the benchmark level so the book becomes live and self-updating. The 6-month review date is 2026-12-13. Not financial advice.",
     "methodNote": "weight_i = composite_i / \u03a3composite ; shares_i = floor(startingCapital \u00b7 weight_i / buyPrice_i) ; cash = startingCapital \u2212 \u03a3 invested. \u03a3composite = 360 across the 5 picks (ELECON 79, SKYGOLD 78, SKIPPER 76, TIMETECHNO 65, CYIENTDLM 62)."
@@ -249,7 +249,7 @@
     "yahooSymbol": "^CNXSC",
     "startDate": "2026-06-13",
     "startLevel": 17079.1,
-    "currentLevel": 18101.0,
+    "currentLevel": 17863.75,
     "startProvisional": false,
     "note": "Provisional start level pending the first live fetch; the GitHub Actions pipeline refreshes currentLevel (and re-baselines startLevel on the first run while startProvisional is true) so the benchmark return is real and dated."
   }
