@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-29",
+    "lastUpdated": "2026-07-30",
     "isIllustrative": false,
     "illustrativeNotice": "",
     "note": "Live prices refresh via the GitHub Actions pipeline (Yahoo + official NSE). In-container this shows entry-day values until the first Actions run.",
